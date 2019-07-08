@@ -11,13 +11,6 @@
 
 package net.proteusframework.kotlinutil.std
 
-import com.google.common.base.CaseFormat
-import net.proteusframework.core.Pair.nullablePair
-import net.proteusframework.core.lang.CloseableIterator
-import net.proteusframework.core.spring.ApplicationContextUtils
-import net.proteusframework.ui.management.nav.Navigable
-import net.proteusframework.ui.management.nav.NavigableBuilder
-import org.apache.logging.log4j.LogManager
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
