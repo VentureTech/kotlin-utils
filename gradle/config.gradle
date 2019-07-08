@@ -1,0 +1,22 @@
+import com.proteusframework.build.Version
+
+description = "${app_description}"
+buildDir = 'build'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = new Version(app_version, project)
+group = app_group
+ext[Version.PROJECT_INFORMATION_PACKAGE] = 'net.proteusframework.kotlin-utils.config'
+
+afterEvaluate {
+    println "Project: $app_name $version"
+}
+
+// Kotlin Configuration
+allOpen {
+    // Makes classes with this annotation open (spring is taken care of)
+}
+noArg {
+    // Generates a hibernate/JPA no-arg constructor for classes with this annotation
+    // Example usage if you desire to use this: annotation('javax.persistence.Entity')
+}

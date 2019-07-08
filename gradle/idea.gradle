@@ -1,0 +1,9 @@
+idea {
+
+    module {
+        sourceDirs += file('build/generated/source/kapt/main')
+        testSourceDirs += file('build/generated/source/kapt/test')
+        generatedSourceDirs += file('build/generated/source/kapt/main')
+        generatedSourceDirs += file('build/generated/source/kapt/test')
+    }
+}
