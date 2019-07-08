@@ -115,23 +115,6 @@ node {
         }
     }
 
-    stage('Coding Convention Review') {
-        timestamps {
-            String jdkHome = tool 'JDK 8'
-
-            withEnv(["JAVA_HOME=$jdkHome"]) {
-                // Run the build
-                ansiColor('xterm') {
-                    sh "./gradlew checkstyleMain $gradleOptions"
-                }
-            }
-
-            checkstyle defaultEncoding: 'UTF-8', failedTotalAll: '30', failedTotalHigh: '5', failedTotalNormal: '20',
-                healthy: '20', pattern: '**/build/**/reports/checkstyle/*.xml', thresholdLimit: 'normal',
-                unHealthy: '50', unstableTotalAll: '40', unstableTotalHigh: '10', unstableTotalNormal: '30',
-                useDeltaValues: true, usePreviousBuildAsReference: true
-        }
-    }
 }
 
 if(currentBuild.result == 'SUCCESS') {

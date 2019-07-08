@@ -11,9 +11,6 @@ apply plugin: 'java'
 // Intellij IDEA
 apply plugin: 'idea'
 
-// Code Inspection
-apply plugin: 'checkstyle'
-
 // Publishing
 apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.artifactory"
