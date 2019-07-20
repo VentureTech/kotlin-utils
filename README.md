@@ -1,3 +1,3 @@
-# proteus-kotlin
+# Kotlin Utilities
 
-Library of useful kotlin specific extensions to Proteus Framework and some other misc utilities.
+Library of Kotlin utilities with no external dependencies besides Kotlin.
