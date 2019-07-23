@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 Interactive Information Research & Development
  *
@@ -21,23 +20,29 @@
  * SOFTWARE.
  */
 
-// Compilation
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-kapt'
-apply plugin: "kotlin-allopen"
-apply plugin: "kotlin-spring"
-apply plugin: "kotlin-noarg"
-apply plugin: "kotlin-jpa"
-apply plugin: 'java'
+package net.proteusframework.kotlinutils.json
 
-// Intellij IDEA
-apply plugin: 'idea'
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonReader
+import com.squareup.moshi.JsonWriter
+import java.io.IOException
+import java.sql.Timestamp
 
-// Publishing
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.artifactory"
+class TimestampJsonAdapter : JsonAdapter<Timestamp>() {
+    @Synchronized
+    @Throws(IOException::class)
+    override fun fromJson(reader: JsonReader): Timestamp? {
+        val string = reader.nextString() ?: return null
+        return Timestamp.valueOf(string)
+    }
 
-// Testing
-//apply plugin: 'org.junit.platform.gradle.plugin'
-
-apply plugin: "com.github.ManifestClasspath"
+    @Synchronized
+    @Throws(IOException::class)
+    override fun toJson(writer: JsonWriter, value: Timestamp?) {
+        if (value == null)
+            writer.nullValue()
+        else {
+            writer.value(value.toString())
+        }
+    }
+}

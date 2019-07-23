@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 Interactive Information Research & Development
  *
@@ -21,23 +20,25 @@
  * SOFTWARE.
  */
 
-// Compilation
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-kapt'
-apply plugin: "kotlin-allopen"
-apply plugin: "kotlin-spring"
-apply plugin: "kotlin-noarg"
-apply plugin: "kotlin-jpa"
-apply plugin: 'java'
+package net.proteusframework.kotlinutils.ranges
 
-// Intellij IDEA
-apply plugin: 'idea'
+import net.proteusframework.kotlinutils.std.adjacent
+import net.proteusframework.kotlinutils.std.intersects
+import net.proteusframework.kotlinutils.std.union
 
-// Publishing
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.artifactory"
-
-// Testing
-//apply plugin: 'org.junit.platform.gradle.plugin'
-
-apply plugin: "com.github.ManifestClasspath"
+fun List<IntRange>.flatten(): MutableList<IntRange> {
+    val newRanges = mutableListOf<IntRange>()
+    var lastRange: IntRange = this.first()
+    for (range: IntRange in this) {
+        if (lastRange == range) continue
+        lastRange = if (range.intersects(lastRange) || range.adjacent(lastRange))
+            range.union(lastRange)
+        else {
+            newRanges.add(lastRange)
+            range
+        }
+    }
+    if (newRanges.isEmpty() || newRanges.last() != lastRange)
+        newRanges.add(lastRange)
+    return newRanges
+}

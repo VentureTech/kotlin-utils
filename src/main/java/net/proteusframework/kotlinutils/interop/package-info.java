@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 Interactive Information Research & Development
  *
@@ -21,23 +20,9 @@
  * SOFTWARE.
  */
 
-// Compilation
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-kapt'
-apply plugin: "kotlin-allopen"
-apply plugin: "kotlin-spring"
-apply plugin: "kotlin-noarg"
-apply plugin: "kotlin-jpa"
-apply plugin: 'java'
-
-// Intellij IDEA
-apply plugin: 'idea'
-
-// Publishing
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.artifactory"
-
-// Testing
-//apply plugin: 'org.junit.platform.gradle.plugin'
-
-apply plugin: "com.github.ManifestClasspath"
+/**
+ * Package containing classes and objects for helping with interop between java and kotlin
+ *
+ * @since 12/27/2018
+ */
+package net.proteusframework.kotlinutils.interop;

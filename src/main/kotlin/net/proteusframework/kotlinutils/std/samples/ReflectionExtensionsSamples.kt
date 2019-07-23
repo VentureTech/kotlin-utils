@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 Interactive Information Research & Development
  *
@@ -21,23 +20,24 @@
  * SOFTWARE.
  */
 
-// Compilation
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-kapt'
-apply plugin: "kotlin-allopen"
-apply plugin: "kotlin-spring"
-apply plugin: "kotlin-noarg"
-apply plugin: "kotlin-jpa"
-apply plugin: 'java'
+package net.proteusframework.kotlinutils.std.samples
 
-// Intellij IDEA
-apply plugin: 'idea'
+import net.proteusframework.kotlinutils.std.unambiguous
 
-// Publishing
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.artifactory"
+internal fun unambiguousSample() {
+	class ClassWithAmbiguity {
+		fun doTheThing() {
+			// Do Something
+		}
+		fun doTheThing(arg: Any) {
+			// Do Something
+		}
+	}
 
-// Testing
-//apply plugin: 'org.junit.platform.gradle.plugin'
+	val amb = ClassWithAmbiguity()
 
-apply plugin: "com.github.ManifestClasspath"
+	// Does not compile due to resolution ambiguity
+	// val doTheThingName = amb::doTheThing.name
+
+	val doTheThingName = unambiguous(amb::doTheThing).name
+}

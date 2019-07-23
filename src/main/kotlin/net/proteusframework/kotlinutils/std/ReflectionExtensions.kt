@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 Interactive Information Research & Development
  *
@@ -21,23 +20,18 @@
  * SOFTWARE.
  */
 
-// Compilation
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-kapt'
-apply plugin: "kotlin-allopen"
-apply plugin: "kotlin-spring"
-apply plugin: "kotlin-noarg"
-apply plugin: "kotlin-jpa"
-apply plugin: 'java'
+package net.proteusframework.kotlinutils.std
 
-// Intellij IDEA
-apply plugin: 'idea'
+import kotlin.reflect.KFunction
 
-// Publishing
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.artifactory"
-
-// Testing
-//apply plugin: 'org.junit.platform.gradle.plugin'
-
-apply plugin: "com.github.ManifestClasspath"
+/**
+ * Get a [KFunction] for the given [KFunction] that has overloads.
+ *
+ * Kotlin makes it impossible to get a function reference for reflection if the function has overloads.
+ * This method allows for getting an unambiguous [KFunction] for those overloaded function references.
+ *
+ * @param fn the [KFunction] to get the unambiguous [KFunction] for.
+ * @return the unambiguous [KFunction]
+ * @sample net.proteusframework.kotlinutils.std.samples.unambiguousSample
+ */
+fun <T : KFunction<*>> unambiguous(fn: T) = fn as KFunction<*>
