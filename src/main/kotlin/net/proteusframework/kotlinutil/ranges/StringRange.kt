@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 Interactive Information Research & Development
  *
@@ -21,23 +20,26 @@
  * SOFTWARE.
  */
 
-// Compilation
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-kapt'
-apply plugin: "kotlin-allopen"
-apply plugin: "kotlin-spring"
-apply plugin: "kotlin-noarg"
-apply plugin: "kotlin-jpa"
-apply plugin: 'java'
+package net.proteusframework.kotlinutil.ranges
 
-// Intellij IDEA
-apply plugin: 'idea'
+import java.util.*
 
-// Publishing
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.artifactory"
+/**
+ * String Range.
+ */
+class StringRange
+internal constructor(val first: String, vararg val rest: String) : ClosedRange<String>, Iterable<String> {
+    override val start: String
+        get() = first
+    override val endInclusive: String
+        get() = if (rest.isEmpty()) first else rest[rest.size - 1]
 
-// Testing
-//apply plugin: 'org.junit.platform.gradle.plugin'
+    override fun iterator(): Iterator<String> = if (rest.isEmpty()) arrayOf(first).iterator() else arrayOf(first, *rest).iterator()
 
-apply plugin: "com.github.ManifestClasspath"
+    override operator fun contains(value: String): Boolean = value == first || value in rest
+    override fun toString(): String {
+        return "StringRange(first='$first', rest=${Arrays.toString(rest)})"
+    }
+
+
+}

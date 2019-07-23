@@ -1,3 +1,3 @@
 # Kotlin Utilities
 
-Library of Kotlin utilities with no external dependencies besides Kotlin.
+Library of Kotlin utilities with minimal external dependencies besides Kotlin.

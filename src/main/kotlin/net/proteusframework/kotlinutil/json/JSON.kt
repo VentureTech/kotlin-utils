@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 Interactive Information Research & Development
  *
@@ -21,23 +20,18 @@
  * SOFTWARE.
  */
 
-// Compilation
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-kapt'
-apply plugin: "kotlin-allopen"
-apply plugin: "kotlin-spring"
-apply plugin: "kotlin-noarg"
-apply plugin: "kotlin-jpa"
-apply plugin: 'java'
+package net.proteusframework.kotlinutil.json
 
-// Intellij IDEA
-apply plugin: 'idea'
+/**
+ * JSON API.
+ * @author Russ Tennant (russ@proteus.co)
+ */
 
-// Publishing
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.artifactory"
 
-// Testing
-//apply plugin: 'org.junit.platform.gradle.plugin'
+interface JSONFactory<out T> {
+    fun fromJSON(json: String): T?
+}
 
-apply plugin: "com.github.ManifestClasspath"
+interface JSONProducer {
+    fun toJSON(): String
+}
