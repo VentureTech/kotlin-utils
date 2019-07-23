@@ -27,8 +27,7 @@ import java.util.*
 /**
  * String Range.
  */
-class StringRange
-internal constructor(val first: String, vararg val rest: String) : ClosedRange<String>, Iterable<String> {
+class StringRange(val first: String, vararg val rest: String) : ClosedRange<String>, Iterable<String> {
     override val start: String
         get() = first
     override val endInclusive: String
