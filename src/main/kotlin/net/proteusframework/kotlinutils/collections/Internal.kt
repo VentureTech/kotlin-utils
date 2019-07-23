@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.proteusframework.kotlinutil.collections
+package net.proteusframework.kotlinutils.collections
 
 import java.util.*
 import java.util.Collections.emptyIterator

@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.ranges
+package net.proteusframework.kotlinutils.ranges
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
-import net.proteusframework.kotlinutil.json.JSONFactory
-import net.proteusframework.kotlinutil.json.JSONProducer
+import net.proteusframework.kotlinutils.json.JSONFactory
+import net.proteusframework.kotlinutils.json.JSONProducer
 import java.util.*
 
 /**

@@ -20,26 +20,18 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.ranges
-
-import java.util.*
+package net.proteusframework.kotlinutils.json
 
 /**
- * String Range.
+ * JSON API.
+ * @author Russ Tennant (russ@proteus.co)
  */
-class StringRange
-internal constructor(val first: String, vararg val rest: String) : ClosedRange<String>, Iterable<String> {
-    override val start: String
-        get() = first
-    override val endInclusive: String
-        get() = if (rest.isEmpty()) first else rest[rest.size - 1]
-
-    override fun iterator(): Iterator<String> = if (rest.isEmpty()) arrayOf(first).iterator() else arrayOf(first, *rest).iterator()
-
-    override operator fun contains(value: String): Boolean = value == first || value in rest
-    override fun toString(): String {
-        return "StringRange(first='$first', rest=${Arrays.toString(rest)})"
-    }
 
 
+interface JSONFactory<out T> {
+    fun fromJSON(json: String): T?
+}
+
+interface JSONProducer {
+    fun toJSON(): String
 }

@@ -20,18 +20,29 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.std
+package net.proteusframework.kotlinutils.json
 
-import kotlin.reflect.KFunction
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonReader
+import com.squareup.moshi.JsonWriter
+import java.io.IOException
+import java.sql.Timestamp
 
-/**
- * Get a [KFunction] for the given [KFunction] that has overloads.
- *
- * Kotlin makes it impossible to get a function reference for reflection if the function has overloads.
- * This method allows for getting an unambiguous [KFunction] for those overloaded function references.
- *
- * @param fn the [KFunction] to get the unambiguous [KFunction] for.
- * @return the unambiguous [KFunction]
- * @sample net.proteusframework.kotlinutil.std.samples.unambiguousSample
- */
-fun <T : KFunction<*>> unambiguous(fn: T) = fn as KFunction<*>
+class TimestampJsonAdapter : JsonAdapter<Timestamp>() {
+    @Synchronized
+    @Throws(IOException::class)
+    override fun fromJson(reader: JsonReader): Timestamp? {
+        val string = reader.nextString() ?: return null
+        return Timestamp.valueOf(string)
+    }
+
+    @Synchronized
+    @Throws(IOException::class)
+    override fun toJson(writer: JsonWriter, value: Timestamp?) {
+        if (value == null)
+            writer.nullValue()
+        else {
+            writer.value(value.toString())
+        }
+    }
+}

@@ -20,15 +20,15 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.ranges
+package net.proteusframework.kotlinutils.ranges
 
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
-import net.proteusframework.kotlinutil.collections.ConcatenatedIterator
-import net.proteusframework.kotlinutil.json.JSONFactory
-import net.proteusframework.kotlinutil.json.JSONProducer
-import net.proteusframework.kotlinutil.std.length
+import net.proteusframework.kotlinutils.collections.ConcatenatedIterator
+import net.proteusframework.kotlinutils.json.JSONFactory
+import net.proteusframework.kotlinutils.json.JSONProducer
+import net.proteusframework.kotlinutils.std.length
 
 /**
  * ZipCode Range.

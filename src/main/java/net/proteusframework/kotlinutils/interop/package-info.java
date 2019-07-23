@@ -20,24 +20,9 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.std.samples
-
-import net.proteusframework.kotlinutil.std.unambiguous
-
-internal fun unambiguousSample() {
-	class ClassWithAmbiguity {
-		fun doTheThing() {
-			// Do Something
-		}
-		fun doTheThing(arg: Any) {
-			// Do Something
-		}
-	}
-
-	val amb = ClassWithAmbiguity()
-
-	// Does not compile due to resolution ambiguity
-	// val doTheThingName = amb::doTheThing.name
-
-	val doTheThingName = unambiguous(amb::doTheThing).name
-}
+/**
+ * Package containing classes and objects for helping with interop between java and kotlin
+ *
+ * @since 12/27/2018
+ */
+package net.proteusframework.kotlinutils.interop;

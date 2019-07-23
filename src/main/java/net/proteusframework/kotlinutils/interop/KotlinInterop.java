@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.interop;
+package net.proteusframework.kotlinutils.interop;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;

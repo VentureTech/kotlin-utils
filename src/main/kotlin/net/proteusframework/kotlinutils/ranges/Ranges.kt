@@ -20,29 +20,25 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.json
+package net.proteusframework.kotlinutils.ranges
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonReader
-import com.squareup.moshi.JsonWriter
-import java.io.IOException
-import java.sql.Timestamp
+import net.proteusframework.kotlinutils.std.adjacent
+import net.proteusframework.kotlinutils.std.intersects
+import net.proteusframework.kotlinutils.std.union
 
-class TimestampJsonAdapter : JsonAdapter<Timestamp>() {
-    @Synchronized
-    @Throws(IOException::class)
-    override fun fromJson(reader: JsonReader): Timestamp? {
-        val string = reader.nextString() ?: return null
-        return Timestamp.valueOf(string)
-    }
-
-    @Synchronized
-    @Throws(IOException::class)
-    override fun toJson(writer: JsonWriter, value: Timestamp?) {
-        if (value == null)
-            writer.nullValue()
+fun List<IntRange>.flatten(): MutableList<IntRange> {
+    val newRanges = mutableListOf<IntRange>()
+    var lastRange: IntRange = this.first()
+    for (range: IntRange in this) {
+        if (lastRange == range) continue
+        lastRange = if (range.intersects(lastRange) || range.adjacent(lastRange))
+            range.union(lastRange)
         else {
-            writer.value(value.toString())
+            newRanges.add(lastRange)
+            range
         }
     }
+    if (newRanges.isEmpty() || newRanges.last() != lastRange)
+        newRanges.add(lastRange)
+    return newRanges
 }

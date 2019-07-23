@@ -20,18 +20,24 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.json
+package net.proteusframework.kotlinutils.std.samples
 
-/**
- * JSON API.
- * @author Russ Tennant (russ@proteus.co)
- */
+import net.proteusframework.kotlinutils.std.unambiguous
 
+internal fun unambiguousSample() {
+	class ClassWithAmbiguity {
+		fun doTheThing() {
+			// Do Something
+		}
+		fun doTheThing(arg: Any) {
+			// Do Something
+		}
+	}
 
-interface JSONFactory<out T> {
-    fun fromJSON(json: String): T?
-}
+	val amb = ClassWithAmbiguity()
 
-interface JSONProducer {
-    fun toJSON(): String
+	// Does not compile due to resolution ambiguity
+	// val doTheThingName = amb::doTheThing.name
+
+	val doTheThingName = unambiguous(amb::doTheThing).name
 }

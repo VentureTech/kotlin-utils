@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.ranges
+package net.proteusframework.kotlinutils.ranges
 
-import net.proteusframework.kotlinutil.std.intersects
-import net.proteusframework.kotlinutil.std.isSubset
+import net.proteusframework.kotlinutils.std.intersects
+import net.proteusframework.kotlinutils.std.isSubset
 
 
 /**

@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.ranges
+package net.proteusframework.kotlinutils.ranges
 
-import net.proteusframework.kotlinutil.collections.ConcatenatedIterator
-import net.proteusframework.kotlinutil.std.length
+import net.proteusframework.kotlinutils.collections.ConcatenatedIterator
+import net.proteusframework.kotlinutils.std.length
 
 
 class IntIntervals private constructor(

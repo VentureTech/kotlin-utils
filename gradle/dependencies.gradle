@@ -86,8 +86,10 @@ dependencies {
         exclude group: "org.testng", module: "testng"
     }
     testRuntime 'com.google.inject:guice:4.0'
-    testCompile 'org.jetbrains.spek:spek-api:1.0.89'
-    testRuntime 'org.jetbrains.spek:spek-junit-platform-engine:1.0.89'
+    testImplementation("org.mockito:mockito-core:2.1.0-beta.119")
+    testImplementation("org.spekframework.spek2:spek-dsl-jvm:2.0.5")
+    testRuntime("org.spekframework.spek2:spek-runner-junit5:2.0.5")
+    testImplementation("com.winterbe:expekt:0.5.0")
     
 }
 

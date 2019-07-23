@@ -20,9 +20,18 @@
  * SOFTWARE.
  */
 
+package net.proteusframework.kotlinutils.std
+
+import kotlin.reflect.KFunction
+
 /**
- * Package containing classes and objects for helping with interop between java and kotlin
+ * Get a [KFunction] for the given [KFunction] that has overloads.
  *
- * @since 12/27/2018
+ * Kotlin makes it impossible to get a function reference for reflection if the function has overloads.
+ * This method allows for getting an unambiguous [KFunction] for those overloaded function references.
+ *
+ * @param fn the [KFunction] to get the unambiguous [KFunction] for.
+ * @return the unambiguous [KFunction]
+ * @sample net.proteusframework.kotlinutils.std.samples.unambiguousSample
  */
-package net.proteusframework.kotlinutil.interop;
+fun <T : KFunction<*>> unambiguous(fn: T) = fn as KFunction<*>

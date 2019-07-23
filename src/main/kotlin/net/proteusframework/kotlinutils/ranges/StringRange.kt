@@ -20,25 +20,26 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.ranges
+package net.proteusframework.kotlinutils.ranges
 
-import net.proteusframework.kotlinutil.std.adjacent
-import net.proteusframework.kotlinutil.std.intersects
-import net.proteusframework.kotlinutil.std.union
+import java.util.*
 
-fun List<IntRange>.flatten(): MutableList<IntRange> {
-    val newRanges = mutableListOf<IntRange>()
-    var lastRange: IntRange = this.first()
-    for (range: IntRange in this) {
-        if (lastRange == range) continue
-        lastRange = if (range.intersects(lastRange) || range.adjacent(lastRange))
-            range.union(lastRange)
-        else {
-            newRanges.add(lastRange)
-            range
-        }
+/**
+ * String Range.
+ */
+class StringRange
+internal constructor(val first: String, vararg val rest: String) : ClosedRange<String>, Iterable<String> {
+    override val start: String
+        get() = first
+    override val endInclusive: String
+        get() = if (rest.isEmpty()) first else rest[rest.size - 1]
+
+    override fun iterator(): Iterator<String> = if (rest.isEmpty()) arrayOf(first).iterator() else arrayOf(first, *rest).iterator()
+
+    override operator fun contains(value: String): Boolean = value == first || value in rest
+    override fun toString(): String {
+        return "StringRange(first='$first', rest=${Arrays.toString(rest)})"
     }
-    if (newRanges.isEmpty() || newRanges.last() != lastRange)
-        newRanges.add(lastRange)
-    return newRanges
+
+
 }

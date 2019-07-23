@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-package net.proteusframework.kotlinutil.std
+package net.proteusframework.kotlinutils.std
 
-import net.proteusframework.kotlinutil.ranges.IntIntervals
-import net.proteusframework.kotlinutil.ranges.Intervals
+import net.proteusframework.kotlinutils.ranges.IntIntervals
+import net.proteusframework.kotlinutils.ranges.Intervals
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import java.util.stream.StreamSupport
