@@ -28,7 +28,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 version = new Version(app_version, project)
 group = app_group
-ext[Version.PROJECT_INFORMATION_PACKAGE] = 'net.proteusframework.kotlin-utils.config'
+ext[Version.PROJECT_INFORMATION_PACKAGE] = 'net.proteusframework.kotlinutil.config'
 
 afterEvaluate {
     println "Project: $app_name $version"

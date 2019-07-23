@@ -25,4 +25,4 @@
  *
  * @since 12/27/2018
  */
-package net.proteusframework.kotlin.interop;
+package net.proteusframework.kotlinutil.interop;

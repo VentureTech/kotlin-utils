@@ -32,6 +32,6 @@ import kotlin.reflect.KFunction
  *
  * @param fn the [KFunction] to get the unambiguous [KFunction] for.
  * @return the unambiguous [KFunction]
- * @sample net.proteusframework.kotlin.std.samples.unambiguousSample
+ * @sample net.proteusframework.kotlinutil.std.samples.unambiguousSample
  */
 fun <T : KFunction<*>> unambiguous(fn: T) = fn as KFunction<*>
