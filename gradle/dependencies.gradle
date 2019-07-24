@@ -48,7 +48,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi:1.8.0")
     implementation("com.squareup.moshi:moshi-adapters:1.8.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.8.0")
-    
+
     // Scripting
 //    https://youtrack.jetbrains.com/issue/KT-30986
     // Including dependency resolution in case packaging changes in the future
@@ -78,19 +78,13 @@ dependencies {
     //|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.31 (*)
     //|    |    \--- org.jetbrains.intellij.deps:trove4j:1.0.20181211
     //|    \--- org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.3.31
-    
 
-    testCompile 'org.testng:testng:6.8.13'
-    testCompile 'junit:junit:4.11'
-    testCompile('org.uncommons:reportng:1.1.2') {
-        exclude group: "org.testng", module: "testng"
-    }
-    testRuntime 'com.google.inject:guice:4.0'
+
     testImplementation("org.mockito:mockito-core:2.1.0-beta.119")
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:2.0.5")
     testRuntime("org.spekframework.spek2:spek-runner-junit5:2.0.5")
     testImplementation("com.winterbe:expekt:0.5.0")
-    
+
 }
 
 
