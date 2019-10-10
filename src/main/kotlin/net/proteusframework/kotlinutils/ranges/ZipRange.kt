@@ -44,6 +44,9 @@ class ZipRange private constructor(
     Intervals<Int>, JSONProducer {
 
     companion object : JSONFactory<ZipRange> {
+
+        private val REGEX_WHITESPACE = "\\s".toRegex()
+
         @JvmStatic
         @FromJson
         override fun fromJSON(json: String): ZipRange =
@@ -71,7 +74,8 @@ class ZipRange private constructor(
         fun of(spec: String): ZipRange {
             val ranges = mutableListOf<IntRange>()
             if (spec.isNotBlank()) {
-                spec.split(',').forEach { zippy ->
+                spec.split(',').forEach { rawZippy ->
+                    val zippy = rawZippy.replace(REGEX_WHITESPACE, "")
                     when (zippy.length) {
                         3    -> {
                             val begin = zippy.padEnd(5, '0').toInt()

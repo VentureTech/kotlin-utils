@@ -124,6 +124,13 @@ class ZipRangeTest : Spek({
         }
     }
 
+    describe("a ziprange that spans over 100 values that is bounded on 00 and 99 and has spaces") {
+        val zr = ZipRange.of("100, 10600-10999, 00150-00250")
+        it("should return the original spec ordered") {
+            zr.normalize().spec.should.be.equal("00150-00250,100,106-109")
+        }
+    }
+
     describe("normalizing 2 consecutive 5 digits") {
         val zr = ZipRange.of("68516,68517")
         it("should return a sane range") {
