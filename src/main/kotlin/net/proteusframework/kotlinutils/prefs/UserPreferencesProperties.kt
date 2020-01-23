@@ -24,10 +24,11 @@ import kotlin.reflect.KClass
 abstract class UserPreferencesProperties(
     /** Class package to use as the preferences' node. See [Preferences#userNodeForPackage] */
     rootNodeKClass: KClass<*>,
-    override val prefKeyTransform: (String) -> String = { it }
+    override val prefKeyTransform: (String) -> String = { it },
+    vararg subNodes: String
 ) : PreferencesProperties() {
     override val rootNode: Preferences by lazy {
-        Preferences.userNodeForPackage(rootNodeKClass.java)
+        Preferences.userNodeForPackage(rootNodeKClass.java).node(subNodes.joinToString("/"))
     }
 }
 
