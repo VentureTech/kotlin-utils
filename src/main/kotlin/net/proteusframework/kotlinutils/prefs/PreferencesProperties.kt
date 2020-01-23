@@ -14,69 +14,88 @@ import kotlin.reflect.KProperty
  * @author Russ Tennant (russ@proteus.co)
  */
 abstract class PreferencesProperties {
-    abstract val rootNode: Preferences
+    abstract val preferences: Preferences
     /** Transformation function to modify the key used for the preference. Source string is the property name. */
     abstract val prefKeyTransform: (String) -> String
 
-    protected fun stringPref(defaultValue: String = ""): ReadWriteProperty<PreferencesProperties, String> =
-        ReadWritePreferencesProperty<String>(defaultValue, prefKeyTransform)
+    protected fun stringPref(
+        defaultValue: String = "",
+        vararg subNode: String
+    ): ReadWriteProperty<PreferencesProperties, String> {
+        return ReadWritePreferencesProperty<String>(defaultValue, prefKeyTransform, subNode)
+    }
 
-    protected fun stringPrefN(defaultValue: String? = null): ReadWriteProperty<PreferencesProperties, String?> =
-        ReadWritePreferencesProperty<String?>(defaultValue, prefKeyTransform)
+    protected fun stringPrefN(
+        defaultValue: String? = null,
+        vararg subNode: String
+    ): ReadWriteProperty<PreferencesProperties, String?> {
+        return ReadWritePreferencesProperty<String?>(defaultValue, prefKeyTransform, subNode)
+    }
 
-    protected fun intPref(defaultValue: Int = 0): ReadWriteProperty<PreferencesProperties, Int> =
-        ReadWritePreferencesProperty<Int>(defaultValue, prefKeyTransform)
+    protected fun intPref(
+        defaultValue: Int = 0,
+        vararg subNode: String
+    ): ReadWriteProperty<PreferencesProperties, Int> {
+        return ReadWritePreferencesProperty<Int>(defaultValue, prefKeyTransform, subNode)
+    }
 
-    protected fun intPrefN(defaultValue: Int? = null): ReadWriteProperty<PreferencesProperties, Int?> =
-        ReadWritePreferencesProperty<Int?>(defaultValue, prefKeyTransform)
+    protected fun longPref(
+        defaultValue: Long = 0,
+        vararg subNode: String
+    ): ReadWriteProperty<PreferencesProperties, Long> {
+        return ReadWritePreferencesProperty<Long>(defaultValue, prefKeyTransform, subNode)
+    }
 
-    protected fun longPref(defaultValue: Long = 0): ReadWriteProperty<PreferencesProperties, Long> =
-        ReadWritePreferencesProperty<Long>(defaultValue, prefKeyTransform)
+    protected fun floatPref(
+        defaultValue: Float = 0f,
+        vararg subNode: String
+    ): ReadWriteProperty<PreferencesProperties, Float> {
+        return ReadWritePreferencesProperty<Float>(defaultValue, prefKeyTransform, subNode)
+    }
 
-    protected fun longPrefN(defaultValue: Long? = null): ReadWriteProperty<PreferencesProperties, Long?> =
-        ReadWritePreferencesProperty<Long?>(defaultValue, prefKeyTransform)
+    protected fun doublePref(
+        defaultValue: Double = 0.0,
+        vararg subNode: String
+    ): ReadWriteProperty<PreferencesProperties, Double> {
+        return ReadWritePreferencesProperty<Double>(defaultValue, prefKeyTransform, subNode)
+    }
 
-    protected fun floatPref(defaultValue: Float = 0f): ReadWriteProperty<PreferencesProperties, Float> =
-        ReadWritePreferencesProperty<Float>(defaultValue, prefKeyTransform)
+    protected fun booleanPref(
+        defaultValue: Boolean = false,
+        vararg subNode: String
+    ): ReadWriteProperty<PreferencesProperties, Boolean> {
+        return ReadWritePreferencesProperty<Boolean>(defaultValue, prefKeyTransform, subNode)
+    }
 
-    protected fun floatPrefN(defaultValue: Float? = null): ReadWriteProperty<PreferencesProperties, Float?> =
-        ReadWritePreferencesProperty<Float?>(defaultValue, prefKeyTransform)
-
-    protected fun doublePref(defaultValue: Double = 0.0): ReadWriteProperty<PreferencesProperties, Double> =
-        ReadWritePreferencesProperty<Double>(defaultValue, prefKeyTransform)
-
-    protected fun doublePrefN(defaultValue: Double? = null): ReadWriteProperty<PreferencesProperties, Double?> =
-        ReadWritePreferencesProperty<Double?>(defaultValue, prefKeyTransform)
-
-    protected fun booleanPref(defaultValue: Boolean = false): ReadWriteProperty<PreferencesProperties, Boolean> =
-        ReadWritePreferencesProperty<Boolean>(defaultValue, prefKeyTransform)
-
-    protected fun booleanPrefN(defaultValue: Boolean? = null): ReadWriteProperty<PreferencesProperties, Boolean?> =
-        ReadWritePreferencesProperty<Boolean?>(defaultValue, prefKeyTransform)
-
-    protected fun byteArrayPref(defaultValue: ByteArray = byteArrayOf()): ReadWriteProperty<PreferencesProperties, ByteArray> =
-        ReadWritePreferencesProperty<ByteArray>(defaultValue, prefKeyTransform)
-
-    protected fun byteArrayPrefN(defaultValue: ByteArray? = null): ReadWriteProperty<PreferencesProperties, ByteArray?> =
-        ReadWritePreferencesProperty<ByteArray?>(defaultValue, prefKeyTransform)
+    protected fun byteArrayPref(
+        defaultValue: ByteArray = byteArrayOf(),
+        vararg subNode: String
+    ): ReadWriteProperty<PreferencesProperties, ByteArray> {
+        return ReadWritePreferencesProperty<ByteArray>(defaultValue, prefKeyTransform, subNode)
+    }
 
     private class ReadWritePreferencesProperty<T>(
         private val defaultValue: T,
-        private val prefKeyTransform: (String) -> String
+        private val prefKeyTransform: (String) -> String,
+        private val subNode: Array<out String>
     ) : ReadWriteProperty<PreferencesProperties, T> {
 
         @Suppress("UNCHECKED_CAST")
         override operator fun getValue(thisRef: PreferencesProperties, property: KProperty<*>): T {
             val preferenceProperty = getPrefAccessors(property) as PreferenceProperty<T>
-            return preferenceProperty.getter(thisRef.rootNode, getPreferenceKey(thisRef, property), this.defaultValue)
+            return preferenceProperty.getter(getPreferences(thisRef), getPreferenceKey(thisRef, property), this
+                .defaultValue)
         }
 
         @Suppress("UNCHECKED_CAST")
         override operator fun setValue(thisRef: PreferencesProperties, property: KProperty<*>, value: T) {
             val preferenceProperty = getPrefAccessors(property) as PreferenceProperty<T>
-            preferenceProperty.setter(thisRef.rootNode, getPreferenceKey(thisRef, property), value)
-            thisRef.rootNode.flush()
+            preferenceProperty.setter(getPreferences(thisRef), getPreferenceKey(thisRef, property), value)
+            thisRef.preferences.flush()
         }
+
+        private fun getPreferences(thisRef: PreferencesProperties): Preferences = if (subNode.isEmpty()) thisRef.preferences
+        else thisRef.preferences.node(subNode.joinToString("/"))
 
         @Suppress("ConvertReferenceToLambda")
         private fun getPrefAccessors(property: KProperty<*>): PreferenceProperty<Any> {
@@ -103,7 +122,7 @@ abstract class PreferencesProperties {
         }
 
         private fun getPreferenceKey(thisRef: PreferencesProperties, property: KProperty<*>): String {
-            val keyMapKey = "/${thisRef.rootNode.absolutePath()}/${property.name}"
+            val keyMapKey = "/${thisRef.preferences.absolutePath()}/${property.name}"
             return KEY_MAP.computeIfAbsent(keyMapKey) { prefKeyTransform(property.name) }
         }
 

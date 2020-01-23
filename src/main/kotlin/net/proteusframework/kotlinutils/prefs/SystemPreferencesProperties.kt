@@ -13,7 +13,6 @@ package net.proteusframework.kotlinutils.prefs
 
 
 import java.util.prefs.Preferences
-import kotlin.reflect.KClass
 
 /**
  * System Preferences properties class that provides preferences variables or values
@@ -22,13 +21,11 @@ import kotlin.reflect.KClass
  * @author Russ Tennant (russ@proteus.co)
  */
 abstract class SystemPreferencesProperties(
-    /** Class package to use as the preferences' node. See [Preferences#systemNodeForPackage] */
-    rootNodeKClass: KClass<*>,
-    override val prefKeyTransform: (String) -> String = { it },
-    vararg subNodes: String
+    preferencesNode: PreferencesNode,
+    override val prefKeyTransform: (String) -> String = { it }
 ) : PreferencesProperties() {
-    override val rootNode: Preferences by lazy {
-        Preferences.systemNodeForPackage(rootNodeKClass.java).node(subNodes.joinToString("/"))
+    override val preferences: Preferences by lazy {
+        preferencesNode.getNode(PreferencesNodeType.SYSTEM)
     }
 }
 
