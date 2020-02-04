@@ -30,6 +30,7 @@ import net.proteusframework.kotlinutils.json.JSONFactory
 import net.proteusframework.kotlinutils.json.JSONProducer
 import net.proteusframework.kotlinutils.std.length
 
+
 /**
  * ZipCode Range.
  */
@@ -46,6 +47,7 @@ class ZipRange private constructor(
     companion object : JSONFactory<ZipRange> {
 
         private val REGEX_WHITESPACE = "\\s".toRegex()
+        private val DO_NOT_COLLAPSE_3_DIGIT = setOf("09800", "09600", "20500")
 
         @JvmStatic
         @FromJson
@@ -55,6 +57,21 @@ class ZipRange private constructor(
         @JvmStatic
         @ToJson
         fun toJSON(zipRange: ZipRange): String = zipRange.toJSON()
+
+        /**
+         * Create a ZipRange from the specified 5 digit zip code.
+         *
+         * @param fiveDigit a 5 digit zip code.
+         * @return the ZipRange.
+         */
+        @JvmStatic
+        fun convertTo3DigitIfPossible(fiveDigit: String): ZipRange {
+            assert(fiveDigit.length == 5) { "Expecting 5 digit zip." }
+            if (fiveDigit.endsWith("00") && fiveDigit !in DO_NOT_COLLAPSE_3_DIGIT)
+                return of(fiveDigit.substring(0..2))
+            else
+                return of(fiveDigit)
+        }
 
         /**
          * Create a ZipRange from the specified range string.
@@ -74,13 +91,14 @@ class ZipRange private constructor(
         fun of(spec: String): ZipRange {
             val ranges = mutableListOf<IntRange>()
             if (spec.isNotBlank()) {
-                spec.split(',').forEach { rawZippy ->
+                spec.split(',').let {
+                    if (it.isEmpty()) listOf(spec)
+                    else it
+                }.forEach { rawZippy ->
                     val zippy = rawZippy.replace(REGEX_WHITESPACE, "")
                     when (zippy.length) {
                         3    -> {
-                            val begin = zippy.padEnd(5, '0').toInt()
-                            val end = zippy.padEnd(5, '9').toInt()
-                            ranges.add(IntRange(begin, end))
+                            ranges.add(pad3(zippy))
                         }
                         5    -> {
                             val beginAndEnd = zippy.toInt()
@@ -110,6 +128,12 @@ class ZipRange private constructor(
             return ZipRange(spec, ranges, start, endIntRange)
         }
 
+        private fun pad3(threeDigit: String): IntRange {
+            assert(threeDigit.length == 3) { "Expecting argument to be 3 characters." }
+            val begin = threeDigit.padEnd(5, '0').toInt()
+            val end = threeDigit.padEnd(5, '9').toInt()
+            return IntRange(begin, end)
+        }
     }
 
     fun length() = ranges.sumBy { it.length() }
@@ -155,7 +179,6 @@ class ZipRange private constructor(
         return of(filter { it !in otherZipRange }
             .joinToString(separator = ",") { it.toString().padStart(5, '0') }).normalize()
     }
-
 
     /**
      * Normalize the ZipRange, collapsing any zip codes that are consecutive into a range declaration (ex: 68516-68716)
