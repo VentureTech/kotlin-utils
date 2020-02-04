@@ -80,9 +80,9 @@ class ZipRangeTest : Spek({
         }
     }
     describe("a ziprange with multiple concurrent zipcodes") {
+        val start = ZipRange.of("100-102,10301,10302,10303,10304,10305,10306,10307,10308,10309,10310")
         it("should collapse zipcodes into range") {
-            val start = ZipRange.of("100-102,10300,10301,10302,10303,10304,10305,10306,10307,10308,10309,10310")
-            start.normalize().spec.should.be.equal("100-102,10300-10310")
+            start.normalize().spec.should.be.equal("100-102,10301-10310")
         }
     }
     describe("a ziprange with multiple ranges and gaps") {
@@ -108,6 +108,11 @@ class ZipRangeTest : Spek({
         it("should return the original spec ordered") {
             zr.spec.should.be.equal("006-009,100")
         }
+    }
+
+    describe("a 3 digit zip should contain everything in it") {
+        val zr = ZipRange.of("681")
+        ("68101" in zr).should.be.`true`
     }
 
     describe("a collapsible 3 digit ziprange the spec is collapsed to 3 digits") {
@@ -140,8 +145,18 @@ class ZipRangeTest : Spek({
 
     describe("a ziprange and a spec to remove") {
         val zr = ZipRange.of("000-999")
+        val norm = zr.normalize()
         it("should properly remove the zips in the spec to remove from the ziprange") {
-            zr.removeSpec("68501").spec.should.be.equal("000,001-684,68500,68502-68599,686-999")
+            val split = zr.removeSpec("68501")
+            split.spec.should.be.equal("000,001-684,68500,68502-68599,686-999")
+        }
+    }
+
+    describe("a ziprange and a spec to remove - smaller") {
+        val zr = ZipRange.of("68501-68610")
+        it("should properly remove the zips in the spec to remove from the ziprange") {
+            val split = zr.removeSpec("68501")
+            split.spec.should.be.equal("68502-68610")
         }
     }
 
@@ -149,6 +164,26 @@ class ZipRangeTest : Spek({
         val zr = ZipRange.of("00100-99999")
         it("should properly collapse, if possible") {
             zr.normalize().spec.should.be.equal("001-999")
+        }
+    }
+
+    describe("a 5-digit zip that is actually a 3-digit zip") {
+        val zr = ZipRange.convertTo3DigitIfPossible("68000")
+        it("should collapse to 3-digit") {
+            zr.normalize().spec.should.be.equal("680")
+        }
+        it("should contain a 5-digit with the same prefix") {
+            ("68055" in zr).should.be.`true`
+        }
+        it("should not contain a 5-digit with a different prefix") {
+            ("68100" in zr).should.be.`false`
+        }
+    }
+
+    describe("the 5-digit zip 20500") {
+        val zr = ZipRange.of("20500")
+        it("should not collapse to 3-digit") {
+            zr.normalize().spec.should.be.equal("20500")
         }
     }
 })
