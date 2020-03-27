@@ -53,3 +53,27 @@ class ClassPreferencesNode(
         USER   -> Preferences.userRoot()
     }.node(nodeName(nodeKClass)).node(subNodes.joinToString("/"))
 }
+
+/**
+ * Implement to provide a property specific sub node.
+ */
+abstract class EnvironmentPreferencesNode(
+    private val delegate: PreferencesNode,
+    /** Property Name. */
+    private val propertyName: String,
+    /** Default property value if not found. Set to null if required. */
+    private val propertyValueDefault: String? = null
+) : PreferencesNode {
+
+    abstract fun getProperty(propertyName: String): String?
+
+    override fun getNode(type: PreferencesNodeType): Preferences {
+        val nodePath = getProperty(propertyName) ?: let {
+            if (propertyValueDefault == null)
+                throw IllegalStateException("No value for property: $propertyName")
+            else
+                propertyValueDefault
+        }
+        return delegate.getNode(type).node(nodePath)
+    }
+}
