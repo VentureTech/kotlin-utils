@@ -97,4 +97,15 @@ abstract class EnvironmentPreferencesNode(
         }
         return delegate.getNode(type).node(nodePath)
     }
+
+    override fun nodeExists(type: PreferencesNodeType): Boolean {
+        val nodePath = getProperty(propertyName) ?: let {
+            if (propertyValueDefault == null)
+                throw IllegalStateException("No value for property: $propertyName")
+            else
+                propertyValueDefault
+        }
+        if (!delegate.nodeExists(type)) return false
+        return delegate.getNode(type).nodeExists(nodePath)
+    }
 }
