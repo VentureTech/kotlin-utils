@@ -18,6 +18,7 @@ enum class PreferencesNodeType {
 
 interface PreferencesNode {
     fun getNode(type: PreferencesNodeType): Preferences
+    fun nodeExists(type: PreferencesNodeType): Boolean
 }
 
 class PackagePreferencesNode(
@@ -30,6 +31,11 @@ class PackagePreferencesNode(
         SYSTEM -> Preferences.systemNodeForPackage(nodePackageKClass.java)
         USER   -> Preferences.userNodeForPackage(nodePackageKClass.java)
     }.node(subNodes.joinToString("/"))
+
+    override fun nodeExists(type: PreferencesNodeType): Boolean = when (type) {
+        SYSTEM -> Preferences.systemNodeForPackage(nodePackageKClass.java)
+        USER   -> Preferences.userNodeForPackage(nodePackageKClass.java)
+    }.nodeExists(subNodes.joinToString("/"))
 }
 
 class PathPreferencesNode(
@@ -40,6 +46,11 @@ class PathPreferencesNode(
         SYSTEM -> Preferences.systemRoot()
         USER   -> Preferences.userRoot()
     }.node(nodePath.joinToString("/"))
+
+    override fun nodeExists(type: PreferencesNodeType): Boolean = when (type) {
+        SYSTEM -> Preferences.systemRoot()
+        USER   -> Preferences.userRoot()
+    }.nodeExists(nodePath.joinToString("/"))
 }
 
 class ClassPreferencesNode(
@@ -52,6 +63,16 @@ class ClassPreferencesNode(
         SYSTEM -> Preferences.systemRoot()
         USER   -> Preferences.userRoot()
     }.node(nodeName(nodeKClass)).node(subNodes.joinToString("/"))
+
+    override fun nodeExists(type: PreferencesNodeType): Boolean {
+        val preferences = when (type) {
+            SYSTEM -> Preferences.systemRoot()
+            USER   -> Preferences.userRoot()
+        }
+        if (!preferences.nodeExists(nodeName(nodeKClass)))
+            return false
+        return preferences.node(nodeName(nodeKClass)).nodeExists(subNodes.joinToString("/"))
+    }
 }
 
 /**
