@@ -24,7 +24,7 @@ package net.proteusframework.kotlinutils.std.samples
 
 import net.proteusframework.kotlinutils.std.unambiguous
 
-internal fun unambiguousSample() {
+fun unambiguousSample() {
 	class ClassWithAmbiguity {
 		fun doTheThing() {
 			// Do Something
