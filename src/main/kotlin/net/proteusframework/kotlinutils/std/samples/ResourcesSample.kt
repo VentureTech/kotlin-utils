@@ -9,7 +9,7 @@ fun withResourcesSample() {
         val file1 = File.createTempFile("foo", "ext")
         val file2 = File.createTempFile("boo", "ext")
 
-        // Caller use to record that you are using this resource so it will be
+        // Call use() to record that you are using this resource so it will be auto-closed
         val writer1 = file1.bufferedWriter().use()
         val writer2 = file2.bufferedWriter().use()
         writer1.write("foo")
