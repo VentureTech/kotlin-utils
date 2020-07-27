@@ -4,7 +4,13 @@ class Resources(private val suppressThrowingException: Boolean = false) : AutoCl
     private val resources = mutableListOf<AutoCloseable>()
     private val doLastBlocks = mutableListOf<(exception: Exception?) -> Unit>()
 
+    @Deprecated(replaceWith = ReplaceWith("autoClose()"), message = "Replaced by autoClose")
     fun <T: AutoCloseable> T.use(): T {
+        resources += this
+        return this
+    }
+
+    fun <T: AutoCloseable> T.autoClose(): T {
         resources += this
         return this
     }
