@@ -55,7 +55,8 @@ node {
             def scmVars = checkout scm
             echo 'SCM Vars'
             scmVars.each {k, v -> echo "$k => $v"}
-
+            discoverGitReferenceBuild defaultBranch: 'master', latestBuildIfNotFound: true
+            mineRepository()
             String gradleProps = readFile('gradle.properties')
             isSnapshot = env.BRANCH_NAME?.startsWith('sprint/') || env.BRANCH_NAME?.startsWith('epic/') ||
                 env.BRANCH_NAME?.startsWith('release/')
@@ -83,13 +84,11 @@ node {
             }
             archiveArtifacts allowEmptyArchive: true, artifacts: 'build/**/libs/*', fingerprint: true
 
-            warnings canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Java Compiler (javac)']],
-                defaultEncoding: 'UTF-8', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: '',
-                useDeltaValues: true, usePreviousBuildAsReference: true
-
-            openTasks canRunOnFailed: true, defaultEncoding: 'UTF-8', excludePattern: '', healthy: '', high: 'FIXME',
-                ignoreCase: true, low: 'FUTURE', normal: 'TODO', pattern: 'src/**/*.java,src/**/*.kt,src/**/*.groovy',
-                unHealthy: '', useDeltaValues: true, usePreviousBuildAsReference: true
+            recordIssues sourceCodeEncoding: 'UTF-8', sourceDirectory: 'src', enabledForFailure: true, tools: [
+                kotlin(),
+                taskScanner(highTags: 'FIXME', ignoreCase: true, includePattern: '**/*.java,**/*.kt,**/*.groovy',
+                    lowTags: 'FUTURE', normalTags: 'TODO')
+            ]
 
         }
     }
@@ -112,6 +111,9 @@ node {
             }
             junit allowEmptyResults: true, healthScaleFactor: 2.0, keepLongStdio: true,
                 testResults: '**/build/**/test-results/**/TEST*.xml'
+            recordIssues sourceCodeEncoding: 'UTF-8', enabledForFailure: true, tools: [
+                junitParser(pattern: '**/build/**/test-results/**/TEST*.xml')
+            ]
         }
     }
 

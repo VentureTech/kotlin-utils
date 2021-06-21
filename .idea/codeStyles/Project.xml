@@ -66,20 +66,11 @@
     </JavaCodeStyleSettings>
     <JetCodeStyleSettings>
       <option name="ALIGN_IN_COLUMNS_CASE_BRANCH" value="true" />
-      <option name="CONTINUATION_INDENT_IN_PARAMETER_LISTS" value="false" />
-      <option name="CONTINUATION_INDENT_FOR_EXPRESSION_BODIES" value="false" />
-      <option name="CONTINUATION_INDENT_FOR_CHAINED_CALLS" value="false" />
-      <option name="CONTINUATION_INDENT_IN_SUPERTYPE_LISTS" value="false" />
-      <option name="CONTINUATION_INDENT_IN_IF_CONDITIONS" value="false" />
-      <option name="WRAP_EXPRESSION_BODY_FUNCTIONS" value="1" />
-      <option name="IF_RPAREN_ON_NEW_LINE" value="true" />
+      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
     </JetCodeStyleSettings>
     <MarkdownNavigatorCodeStyleSettings>
       <option name="RIGHT_MARGIN" value="72" />
     </MarkdownNavigatorCodeStyleSettings>
-    <XML>
-      <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
-    </XML>
     <editorconfig>
       <option name="ENABLED" value="false" />
     </editorconfig>
@@ -509,13 +500,8 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="kotlin">
+      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
       <option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true" />
-      <option name="CALL_PARAMETERS_WRAP" value="5" />
-      <option name="METHOD_PARAMETERS_WRAP" value="5" />
-      <option name="METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
-      <option name="EXTENDS_LIST_WRAP" value="1" />
-      <option name="METHOD_CALL_CHAIN_WRAP" value="1" />
-      <option name="ASSIGNMENT_WRAP" value="1" />
       <option name="ENUM_CONSTANTS_WRAP" value="2" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />

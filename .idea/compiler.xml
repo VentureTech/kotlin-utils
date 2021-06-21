@@ -5,7 +5,6 @@
     <option name="delegateToJavac" value="true" />
   </component>
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="ajc" />
     <addNotNullAssertions enabled="false" />
     <wildcardResourcePatterns>
       <entry name="!?*.java" />
@@ -24,7 +23,7 @@
         <outputRelativeToContentRoot value="true" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8">
       <module name="proteus-kotlin.buildSrc.main" target="1.8" />
       <module name="proteus-kotlin.buildSrc.test" target="1.8" />
       <module name="proteus-kotlin.main" target="1.8" />

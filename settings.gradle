@@ -20,28 +20,14 @@
  * SOFTWARE.
  */
 
-import com.proteusframework.build.Property
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
     }
 }
-
-// Check required properties
-def props = [
-    new Property(name:'repo_venturetech_username',description:'Username to access the artifact repository'),
-    new Property(name:'repo_venturetech_password',description:'Password to access the artifact repository'),
-    new Property(name:'publish_venturetech_username',description:'Username to upload to the artifact repository', required:false),
-    new Property(name:'publish_venturetech_password',description:'Password to upload to the artifact repository', required:false),
-]
-
-
 settings.rootProject.name = "${app_name}"
 
 settings.gradle.projectsLoaded( {
-    props.each({it.test(settings)})
-
     def hasLocalRepo = settings.hasProperty('local_repo')
     if(hasLocalRepo) {
         def repoHost = new URL(settings.getProperty('local_repo')).getHost()
@@ -80,6 +66,5 @@ settings.gradle.projectsLoaded( {
     settings.gradle.rootProject.ext.isEclipse = System.getProperties().containsKey('eclipse.product')
     settings.gradle.rootProject.ext.compileLibraries = settings.hasProperty('compile_libraries') ||
         settings.gradle.rootProject.ext.isIDEA;
-    
 })
 
