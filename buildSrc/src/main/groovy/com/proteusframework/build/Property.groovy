@@ -33,17 +33,12 @@ class Property
     def description
     def required = true
 
-    boolean test(def settings)
+    boolean test(def project)
     {
         def res = true
-        if (!settings.hasProperty(name))
+        if (!project.hasProperty(name))
         {
-            def envValue = System.getenv().get(name)
-            if(envValue)
-            {
-                settings.gradle.rootProject.ext[name] = envValue
-            }
-            else if (required)
+            if (required)
             {
                 println "Missing property: ${toString()}"
                 res = false
@@ -51,7 +46,7 @@ class Property
             else
             {
                 println "Defaulting non-required property: ${toString()} to NOT_SPECIFIED"
-                settings.gradle.rootProject.ext[name] = 'NOT_SPECIFIED'
+                project.ext[name] = 'NOT_SPECIFIED'
             }
         }
         res
