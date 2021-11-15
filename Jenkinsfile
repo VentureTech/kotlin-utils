@@ -100,20 +100,19 @@ node {
             withEnv(["JAVA_HOME=$jdkHome"]) {
                 // Run the build
                 ansiColor('xterm') {
-                    try{
+                    try {
                         sh "./gradlew test $gradleOptions"
                     } catch(err) {
                         currentBuild.result = 'FAILURE'
                         checkForBuildFailure(currentBuild, env, atUser, slack)
-                        throw err
                     }
                 }
             }
-            junit allowEmptyResults: true, healthScaleFactor: 2.0, keepLongStdio: true,
-                testResults: '**/build/**/test-results/**/TEST*.xml'
             recordIssues sourceCodeEncoding: 'UTF-8', enabledForFailure: true, tools: [
                 junitParser(pattern: '**/build/**/test-results/**/TEST*.xml')
             ]
+            junit allowEmptyResults: true, healthScaleFactor: 2.0, keepLongStdio: true,
+                testResults: '**/build/**/test-results/**/TEST*.xml'
         }
     }
 

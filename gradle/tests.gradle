@@ -1,4 +1,10 @@
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed", "STANDARD_ERROR", "STANDARD_OUT"
+    }
+    onOutput { descriptor, event ->
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+    }
 }
