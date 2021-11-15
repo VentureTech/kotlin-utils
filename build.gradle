@@ -163,7 +163,7 @@ configurations.all {
         // cache dynamic versions for ...
 //        cacheDynamicVersionsFor 0, 'seconds'
         // cache changing modules (SNAPSHOT) for ...
-        cacheChangingModulesFor 300, 'seconds'
+//        cacheChangingModulesFor 300, 'seconds'
     }
 }
 
