@@ -27,8 +27,64 @@ import net.proteusframework.kotlinutils.std.length
 
 
 class IntIntervals private constructor(
-    override val ranges: List<IntRange>, override val start: Int, override val endInclusive: Int) :
-    Intervals<Int> {
+    override val ranges: List<IntRange>,
+    override val start: Int,
+    override val endInclusive: Int
+) : Intervals<Int> {
+
+    override fun iterator(): Iterator<Int> {
+        val list: MutableList<Iterator<Int>> = ranges
+            .map { IntRange(it.first, it.last).iterator() }
+            .toMutableList()
+        return ConcatenatedIterator(list.iterator())
+    }
+
+    override fun toString(): String {
+        return "IntIntervals(ranges=$ranges, start=$start, endInclusive=$endInclusive)"
+    }
+
+    fun length() = ranges.sumBy { it.length() }
+
+    fun atIndex(index: Int): Int {
+        var mIndex = index
+        for (range in ranges) {
+            if (mIndex > range.length()) {
+                mIndex = -range.length()
+            } else {
+                return range.first + mIndex
+            }
+        }
+        throw IndexOutOfBoundsException("Invalid index: $index")
+    }
+
+    fun normalize(): IntIntervals {
+        if (ranges.isEmpty()) return this
+        val newRanges = ranges.flatten()
+        val spec = mutableListOf<String>()
+        for (range in newRanges) {
+            if (range.first == range.last)
+                spec.add(range.first.toString())
+            else {
+                val start = range.first
+                val end = range.last.toString()
+                spec.add("$start-$end")
+            }
+        }
+        return of(spec.joinToString(separator = ","))
+    }
+
+    override fun hashCode(): Int = (start * 31) + endInclusive
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is IntIntervals) return false
+        if (ranges.size != other.ranges.size) return false
+        for ((index, range) in ranges.withIndex()) {
+            if (range != other.ranges[index])
+                return false
+        }
+        return true
+    }
 
     companion object {
         fun of(ranges: MutableList<ClosedRange<Int>>): IntIntervals {
@@ -74,69 +130,14 @@ class IntIntervals private constructor(
                     }
                 }
             }
-            ranges.sortBy { it.start }
+            ranges.sortBy { it.first }
             var start = 0
             var endIntRange = 0
             if (spec.isNotBlank()) {
-                start = ranges.first().start
-                endIntRange = ranges.last().endInclusive
+                start = ranges.first().first
+                endIntRange = ranges.last().last
             }
             return IntIntervals(ranges, start, endIntRange)
         }
     }
-
-    override fun iterator(): Iterator<Int> {
-        val list: MutableList<Iterator<Int>> = ranges
-            .map { IntRange(it.start, it.last).iterator() }
-            .toMutableList()
-        return ConcatenatedIterator(list.iterator())
-    }
-
-    override fun toString(): String {
-        return "IntIntervals(ranges=$ranges, start=$start, endInclusive=$endInclusive)"
-    }
-
-    fun length() = ranges.sumBy { it.length() }
-
-    fun atIndex(index: Int): Int {
-        var mIndex = index
-        for (range in ranges) {
-            if (mIndex > range.length()) {
-                mIndex = -range.length()
-            } else {
-                return range.start + mIndex
-            }
-        }
-        throw IndexOutOfBoundsException("Invalid index: $index")
-    }
-
-    fun normalize(): IntIntervals {
-        if (ranges.isEmpty()) return this
-        val newRanges = ranges.flatten()
-        val spec = mutableListOf<String>()
-        for (range in newRanges) {
-            if (range.start == range.endInclusive)
-                spec.add(range.start.toString())
-            else {
-                val start = range.start
-                val end = range.endInclusive.toString()
-                spec.add("$start-$end")
-            }
-        }
-        return of(spec.joinToString(separator = ","))
-    }
-
-    override fun hashCode(): Int = (start * 31) + endInclusive
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is IntIntervals) return false
-        if (ranges.size != other.ranges.size) return false
-        for ((index, range) in ranges.withIndex()) {
-            if (range != other.ranges[index])
-                return false
-        }
-        return true
-    }
-
 }
