@@ -34,7 +34,7 @@ class DateRangeTest : Spek({
         val json = dr.toJSON()
         println(json)
         it("should encode to expected json") {
-            json.should.equal("""{"dstart":"1999-01-01T06:00:00.000Z","dend":"1999-12-01T06:00:00.000Z"}""")
+            json.should.equal("""{"dstart":"1999-01-01T00:00:00.000Z","dend":"1999-12-01T00:00:00.000Z"}""")
         }
         it("should decode to expected object") {
             DateRange.fromJSON(json).should.equal(dr)
