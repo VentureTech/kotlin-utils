@@ -25,6 +25,7 @@ package net.proteusframework.kotlinutils.ranges
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import net.proteusframework.kotlinutils.json.JSONFactory
 import net.proteusframework.kotlinutils.json.JSONProducer
 import java.util.*
@@ -36,25 +37,7 @@ import java.util.*
  * @param dend the end date.
  * @author Russ Tennant (russ@proteus.co)
  */
-class DateRange(var dstart: Date?, val dend: Date?)
-    : ClosedRange<Date>, JSONProducer {
-    companion object : JSONFactory<DateRange> {
-        val adapter: JsonAdapter<DateRange> = Moshi.Builder()
-            .add(Date::class.java, Rfc3339DateJsonAdapter())
-            .build()
-            .adapter(DateRange::class.java)
-        private val FIRST_DAY: Date
-
-        @JvmStatic
-        override fun fromJSON(json: String): DateRange? = adapter.fromJson(json)
-
-        init {
-            val cal = Calendar.getInstance(TimeZone.getTimeZone("Etc/UTC"))
-            cal.set(1, 0, 1, 0, 0, 0)
-            cal.set(Calendar.MILLISECOND, 0)
-            FIRST_DAY = cal.time
-        }
-    }
+class DateRange(var dstart: Date?, val dend: Date?) : ClosedRange<Date>, JSONProducer {
 
     init {
         assert(((dstart != null) || (dend != null))) { "Either start or end must be non-null." }
@@ -85,6 +68,24 @@ class DateRange(var dstart: Date?, val dend: Date?)
         return dstart == other.dstart && dend == other.dend
     }
 
-    override fun hashCode(): Int = (dstart?.hashCode() ?: 0 * 31) + (dend?.hashCode() ?: 0)
+    override fun hashCode(): Int = (dstart?.hashCode() ?: (0 * 31)) + (dend?.hashCode() ?: 0)
 
+    companion object : JSONFactory<DateRange> {
+        val adapter: JsonAdapter<DateRange> = Moshi.Builder()
+            .add(Date::class.java, Rfc3339DateJsonAdapter())
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+            .adapter(DateRange::class.java)
+        private val FIRST_DAY: Date
+
+        @JvmStatic
+        override fun fromJSON(json: String): DateRange? = adapter.fromJson(json)
+
+        init {
+            val cal = Calendar.getInstance(TimeZone.getTimeZone("Etc/UTC"))
+            cal.set(1, 0, 1, 0, 0, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            FIRST_DAY = cal.time
+        }
+    }
 }

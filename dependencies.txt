@@ -1,7 +1,8 @@
-com.squareup.moshi:moshi:1.8.0
-com.squareup.moshi:moshi-adapters:1.8.0
-com.squareup.moshi:moshi-kotlin:1.8.0
-com.squareup.okio:okio:1.16.0
+com.squareup.moshi:moshi:1.12.0
+com.squareup.moshi:moshi-adapters:1.12.0
+com.squareup.moshi:moshi-kotlin:1.12.0
+com.squareup.okio:okio:2.10.0
+com.squareup.okio:okio-metadata:2.10.0
 com.winterbe:expekt:0.5.0
 io.github.classgraph:classgraph:4.0.6
 net.bytebuddy:byte-buddy:1.4.20
@@ -16,6 +17,7 @@ org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.3.72
 org.jetbrains.kotlin:kotlin-gradle-plugin-model:1.3.72
 org.jetbrains.kotlin:kotlin-native-utils:1.3.72
 org.jetbrains.kotlin:kotlin-noarg:1.3.72
+org.jetbrains.kotlin:kotlin-reflect:1.4.31
 org.jetbrains.kotlin:kotlin-reflect:1.3.72
 org.jetbrains.kotlin:kotlin-reflect:1.3.30
 org.jetbrains.kotlin:kotlin-script-runtime:1.3.72
@@ -23,8 +25,10 @@ org.jetbrains.kotlin:kotlin-scripting-common:1.3.72
 org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.3.72
 org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:1.3.72
 org.jetbrains.kotlin:kotlin-scripting-jvm:1.3.72
+org.jetbrains.kotlin:kotlin-stdlib:1.4.31
 org.jetbrains.kotlin:kotlin-stdlib:1.3.72
 org.jetbrains.kotlin:kotlin-stdlib:1.3.30
+org.jetbrains.kotlin:kotlin-stdlib-common:1.4.31
 org.jetbrains.kotlin:kotlin-stdlib-common:1.3.72
 org.jetbrains.kotlin:kotlin-stdlib-common:1.3.30
 org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72
