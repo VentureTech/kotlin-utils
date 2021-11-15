@@ -31,11 +31,13 @@ class DateRangeTest : Spek({
     describe("serializing a date range") {
         @Suppress("DEPRECATION")
         val dr = DateRange(Date(99,0,1), Date(99,11,1))
+        val json = dr.toJSON()
+        println(json)
         it("should encode to expected json") {
-            dr.toJSON().should.equal("""{"dstart":"1999-01-01T06:00:00.000Z","dend":"1999-12-01T06:00:00.000Z"}""")
+            json.should.equal("""{"dstart":"1999-01-01T06:00:00.000Z","dend":"1999-12-01T06:00:00.000Z"}""")
         }
         it("should decode to expected object") {
-            DateRange.fromJSON(dr.toJSON()).should.equal(dr)
+            DateRange.fromJSON(json).should.equal(dr)
         }
     }
 })
