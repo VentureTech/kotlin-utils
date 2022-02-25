@@ -30,6 +30,11 @@ import java.text.SimpleDateFormat
  */
 class Version
 {
+    enum Lang {
+        Java,
+        Kotlin
+    }
+
     /**
      * Optional variable that can be defined in the build.gradle
      * to determine where the ProjectInformation.java class is put
@@ -51,50 +56,50 @@ class Version
      */
     static String capitalize(String s, char... delimiters)
     {
-        final int dl;
+        final int dl
         if (delimiters == null)
         {
-            dl = 0;
+            dl = 0
         }
         else
         {
-            dl = delimiters.length;
-            Arrays.sort(delimiters);
+            dl = delimiters.length
+            Arrays.sort(delimiters)
         }
-        boolean capitalizeNextCharacter = true;
-        final int sl = s.length();
-        final StringBuilder captialized = new StringBuilder(sl);
+        boolean capitalizeNextCharacter = true
+        final int sl = s.length()
+        final StringBuilder captialized = new StringBuilder(sl)
         for (int i = 0; i < sl; i++)
         {
-            final char c = s.charAt(i);
-            final boolean isDelimiter;
+            final char c = s.charAt(i)
+            final boolean isDelimiter
             if (dl == 0)
-                isDelimiter = Character.isWhitespace(c);
+                isDelimiter = Character.isWhitespace(c)
             else
             {
-                isDelimiter = Arrays.binarySearch(delimiters, c) >= 0;
+                isDelimiter = Arrays.binarySearch(delimiters, c) >= 0
             }
 
             if (isDelimiter)
             {
-                captialized.append(c);
-                capitalizeNextCharacter = true;
+                captialized.append(c)
+                capitalizeNextCharacter = true
             }
             else if (capitalizeNextCharacter)
             {
-                captialized.append(Character.toTitleCase(c));
-                capitalizeNextCharacter = false;
+                captialized.append(Character.toTitleCase(c))
+                capitalizeNextCharacter = false
             }
             else
             {
-                captialized.append(c);
+                captialized.append(c)
             }
         }
-        return captialized.toString();
+        return captialized.toString()
 
     }
 
-    String versionNumber;
+    String versionNumber
     String originalVersion
     String thisVersion
     String status
@@ -133,7 +138,7 @@ class Version
 
         // Convert local file timestamp to UTC
         def format = new SimpleDateFormat('yyyyMMddHHmmss')
-        format.setCalendar(Calendar.getInstance(TimeZone.getTimeZone('Etc/UTC')));
+        format.setCalendar(Calendar.getInstance(TimeZone.getTimeZone('Etc/UTC')))
         return format.format(buildTime)
     }
 
@@ -162,12 +167,26 @@ class Version
     /**
      * Generate a version class for the project.
      */
-    void generateProjectInformationClass()
+    void generateProjectInformationClass(Lang lang)
     {
+        if (lang == Lang.Java) {
+            generateProjectInformationJavaClass()
+        } else if (lang == Lang.Kotlin) {
+            generateProjectInformationKotlinClass()
+        } else {
+            throw new IllegalArgumentException("Invalid lang: $lang")
+        }
+    }
+    /**
+     * Generate a version class for the project.
+     */
+    void generateProjectInformationJavaClass()
+    {
+        println("generateProjectInformationClass !!!!!!!!!!!!!!!!!!")
         def now = new SimpleDateFormat('yyyyMMdd\'T\'HHmmss.SSSZ').format(new java.util.Date())
         def srcDir = project.sourceSets.main.java.srcDirs.iterator().next()
         def packageName = project.hasProperty(PROJECT_INFORMATION_PACKAGE) ?
-            project[PROJECT_INFORMATION_PACKAGE] : "${project.group.toString()}.${project.name}";
+            project[PROJECT_INFORMATION_PACKAGE] : "${project.group.toString()}.${project.name}"
         def packageDir = new File(srcDir, packageName.replace('.', '/'))
         packageDir.mkdirs()
         def gitIgnore = new File(packageDir, '.gitignore')
@@ -182,7 +201,7 @@ ProjectInformation.java
             && getVersion(generatedClass.text) == versionNumber
         )
         {
-            return;
+            return
         }
         generatedClass.text = """
 /*
@@ -295,9 +314,77 @@ public final class ProjectInformation
     }
     
 }
-
 """
 
+    }
+
+    /**
+     * Generate a version class for the project.
+     */
+    void generateProjectInformationKotlinClass()
+    {
+        def srcDir = project.sourceSets.main.kotlin.srcDirs.iterator().next()
+        def packageName = project.hasProperty(PROJECT_INFORMATION_PACKAGE) ?
+            project[PROJECT_INFORMATION_PACKAGE] : "${project.group.toString()}.${project.name}"
+        def packageDir = new File(srcDir, packageName.replace('.', '/'))
+        packageDir.mkdirs()
+        def gitIgnore = new File(packageDir, '.gitignore')
+        if(!gitIgnore.exists()) {
+            gitIgnore.text = """# Ignore auto generated file ProjectInformation.kt
+ProjectInformation.kt
+.gitignore"""
+        }
+        def generatedClass = new File(packageDir, 'ProjectInformation.kt')
+        if (generatedClass.exists()
+            && getCommit(generatedClass.text) == project?.gitinfo?.commit?:''
+            && getVersion(generatedClass.text) == versionNumber
+        )
+        {
+            return
+        }
+        generatedClass.text = """
+/*
+ * Copyright (c) Interactive Information R & D (I2RD) LLC.
+ * All Rights Reserved.
+ *
+ * This software is confidential and proprietary information of
+ * I2RD LLC ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered
+ * into with I2RD.
+ */
+
+@file:Suppress("MemberVisibilityCanBePrivate")
+
+package ${packageName}
+
+/**
+ * Project Information.
+ * @author Auto Generated (noreply@i2rd.com)
+ */
+object ProjectInformation
+{
+    /** Application Name. */
+    const val APPLICATION_NAME = "${capitalize(project.name.replace('-', ' '))}"
+    /** Name. */
+    const val NAME = "${project.name}"
+    /** Group. */
+    const val GROUP = "${project.group}"
+    /** Version. */
+    const val VERSION = "${versionNumber}"
+    /** Commit. */
+    const val COMMIT = "${project?.gitinfo?.commit?:''}"
+    /** Branch. */
+    const val BRANCH = "${project?.gitinfo?.branch?:''}"
+    /** Status: release, milestone, integration. */
+    const val STATUS = "${status}"
+
+    val MAJOR_VERSION: Int
+        get() {
+            return Integer.parseInt(VERSION.substring(0, VERSION.indexOf('.')))
+        }
+}
+"""
     }
 }
 

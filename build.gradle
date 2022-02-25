@@ -20,18 +20,10 @@
  * SOFTWARE.
  */
 
-import com.proteusframework.build.GitInfo
-import org.gradle.authentication.http.BasicAuthentication
-import com.proteusframework.build.Property
 
-// Check required properties
-def props = [
-    new Property(name:'repo_venturetech_username',description:'Username to access the artifact repository'),
-    new Property(name:'repo_venturetech_password',description:'Password to access the artifact repository'),
-    new Property(name:'publish_venturetech_username',description:'Username to upload to the artifact repository', required:false),
-    new Property(name:'publish_venturetech_password',description:'Password to upload to the artifact repository', required:false),
-]
-props.each({it.test(rootProject)})
+import com.proteusframework.build.GitInfo
+import com.proteusframework.build.Property
+import com.proteusframework.build.Version
 
 buildscript {
     ext.kotlin_version = version_kotlin
@@ -47,22 +39,30 @@ buildscript {
                 basic(BasicAuthentication)
             }
         }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
     }
-    dependencies {
-        classpath "org.ajoberstar.grgit:grgit-core:3.0.0"
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.21.0'
-
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlin_version"
-//        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M2'
-        classpath "gradle.plugin.com.github.viswaramamoorthy:gradle-util-plugins:0.1.0-RELEASE"
-    }
-
 }
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version "${kotlin_version}"
+
+    id 'idea'
+    id 'maven-publish'
+    id "com.jfrog.artifactory" version "4.21.0"
+    id "org.cyclonedx.bom" version "1.5.0"
+
+    id "com.github.ManifestClasspath" version "0.1.0-RELEASE"
+}
+
+// Check required properties
+def props = [
+    new Property(name:'repo_venturetech_username',description:'Username to access the artifact repository'),
+    new Property(name:'repo_venturetech_password',description:'Password to access the artifact repository'),
+    new Property(name:'publish_venturetech_username',description:'Username to upload to the artifact repository', required:false),
+    new Property(name:'publish_venturetech_password',description:'Password to upload to the artifact repository', required:false),
+]
+props.each({it.test(rootProject)})
+
+
 repositories {
 //    mavenLocal()
     if(hasLocalRepo){ maven { url = local_repo } }
@@ -86,80 +86,55 @@ repositories {
             basic(BasicAuthentication)
         }
     }
-    maven {
-        url "https://dl.bintray.com/kotlin/exposed"
-    }
-    jcenter()
-    maven {
-        url = new URI("https://dl.bintray.com/spekframework/spek")
-        mavenContent {
-            includeGroup("org.spekframework.spek2")
-        }
-    }
 }
 GitInfo.populateProject(project)
 
-apply from: 'gradle/plugins.gradle'
-apply from: 'gradle/config.gradle'
-apply from: 'gradle/dependencies.gradle'
-apply from: 'gradle/artifacts.gradle'
-apply from: 'gradle/tests.gradle'
-apply from: 'gradle/publishing.gradle'
-apply from: 'gradle/idea.gradle'
+description = "${app_description}"
+buildDir = 'build'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = new Version(app_version, project)
+group = app_group
+ext[Version.PROJECT_INFORMATION_PACKAGE] = 'net.proteusframework.kotlinutils.config'
 
-
-task autoDeploy(type: com.proteusframework.build.DeployTask) {
-    group = 'Publishing'
-    id = "${findProperty('aws_id')?:'MISSING_ID'}"
-    secret ="${findProperty('aws_secret')?:'MISSING_SECRET'}"
+afterEvaluate {
+    println "Project: $app_name $version"
 }
 
+apply from: 'gradle/dependencies.gradle'
+apply from: 'gradle/tests.gradle'
+apply from: 'gradle/artifacts.gradle'
+apply from: 'gradle/publishing.gradle'
 
+normalization {
+    runtimeClasspath {
+        ignore 'net.proteusframework.kotlinutils.config.ProjectInformation.*'
+    }
+}
+
+gradle.projectsEvaluated {
+    version.generateProjectInformationClass(Version.Lang.Kotlin)
+}
+
+cyclonedxBom {
+    // includeConfigs is the list of configuration names to include when generating the BOM (leave empty to include every configuration)
+    includeConfigs += ["runtimeClasspath", "testRuntimeClasspath"]
+    // skipConfigs is a list of configuration names to exclude when generating the BOM
+//    skipConfigs += ["compileClasspath", "testCompileClasspath"]
+    // Specified the type of project being built. Defaults to 'library'
+//    project.ext.projectType = "application"
+}
+
+def matchDetails(DependencyResolveDetails details, String groupAndArtifact) {
+    def split = groupAndArtifact.split(':')
+    def group = split[0]
+    def artifact = split[1]
+    return details.requested.group == group && details.requested.name == artifact
+}
 
 //noinspection GroovyAssignabilityCheck
 configurations.all {
-    exclude group: 'org.eclipse.birt.runtime.3_7_1', module: 'org.apache.commons.codec'
     resolutionStrategy {
-        dependencySubstitution {
-            substitute module('bouncycastle:bcmail-jdk14:138') with module('org.bouncycastle:bcmail-jdk15on:1.52')
-            substitute module('bouncycastle:bcprov-jdk14:138') with module('org.bouncycastle:bcprov-jdk15on:1.52')
-            substitute module('bouncycastle:bctsp-jdk14:138') with module('org.bouncycastle:bctsp-jdk15on:1.46')
-        }
-        eachDependency {DependencyResolveDetails details ->
-            if (details.requested.group == 'org.aspectj' && details.requested.name == 'aspectjweaver')
-            {
-                details.useVersion aspectjVersion
-            }
-            if (details.requested.group == 'xml-apis')
-            {
-                details.useVersion '1.4.+'
-            }
-            // Thanks BIRT
-            if (details.requested.group == 'org.eclipse.scout.sdk.deps')
-            {
-                switch (details.requested.name)
-                {
-                    case 'org.eclipse.core.runtime':
-                        details.useVersion('3.12.0.v20160606-1342'); break;
-                    case 'org.eclipse.core.contenttype':
-                        details.useVersion('3.5.100.v20160418-1621');break;
-                    case 'org.eclipse.core.expressions':
-                        details.useVersion('3.5.100.v20160418-1621'); break;
-                    case 'org.eclipse.equinox.preferences':
-                        details.useVersion('3.6.0.v20160120-1756'); break;
-                    case 'org.eclipse.core.filesystem':
-                        details.useVersion('1.6.0.v20160503-1608'); break;
-                    case 'org.eclipse.equinox.common':
-                        details.useVersion('3.8.0.v20160509-1230'); break;
-                    case 'org.eclipse.equinox.registry':
-                        details.useVersion('3.6.100.v20160223-2218'); break;
-                    case 'org.eclipse.osgi':
-                        details.useVersion('3.11.0.v20160603-1336'); break;
-                    case 'org.eclipse.core.jobs':
-                        details.useVersion('3.8.0.v20160509-0411'); break;
-                }
-            }
-        }
         // cache dynamic versions for ...
 //        cacheDynamicVersionsFor 0, 'seconds'
         // cache changing modules (SNAPSHOT) for ...
@@ -167,4 +142,9 @@ configurations.all {
     }
 }
 
-
+idea {
+    module {
+        generatedSourceDirs += file('build/generated/source/kapt/main')
+        generatedSourceDirs += file('build/generated/source/kapt/test')
+    }
+}

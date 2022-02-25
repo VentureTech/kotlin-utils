@@ -20,24 +20,27 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
+
 package net.proteusframework.kotlinutils.std.samples
 
 import net.proteusframework.kotlinutils.std.unambiguous
 
 fun unambiguousSample() {
-	class ClassWithAmbiguity {
-		fun doTheThing() {
-			// Do Something
-		}
-		fun doTheThing(arg: Any) {
-			// Do Something
-		}
-	}
+    class ClassWithAmbiguity {
+        fun doTheThing() {
+            // Do Something
+        }
 
-	val amb = ClassWithAmbiguity()
+        fun doTheThing(arg: Any) {
+            // Do Something
+        }
+    }
 
-	// Does not compile due to resolution ambiguity
-	// val doTheThingName = amb::doTheThing.name
+    val amb = ClassWithAmbiguity()
 
-	val doTheThingName = unambiguous(amb::doTheThing).name
+    // Does not compile due to resolution ambiguity
+    // val doTheThingName = amb::doTheThing.name
+
+    val doTheThingName = unambiguous(amb::doTheThing).name
 }

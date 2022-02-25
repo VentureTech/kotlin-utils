@@ -21,11 +21,11 @@
  * SOFTWARE.
  */
 
-apply plugin: 'groovy'
+plugins {
+    id 'groovy'
+}
+
 repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
     maven {
         credentials {
             username "${repo_venturetech_username}"
@@ -34,9 +34,8 @@ repositories {
         url "${repo_venture_tech_url}/release"
     }
 }
+
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    compile "org.ajoberstar.grgit:grgit-core:3.0.0"
-    compile "com.amazonaws:aws-java-sdk-sqs:${version_aws}"
+    implementation gradleApi()
+    implementation "org.ajoberstar.grgit:grgit-core:3.0.0"
 }
