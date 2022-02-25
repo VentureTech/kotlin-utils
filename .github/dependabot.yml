@@ -2,9 +2,9 @@ version: 2
 updates:
   # Configuration for Dockerfile
   - package-ecosystem: "maven"
-    directory: "/"
+    directory: "/.dependabot/"
     schedule:
       interval: "daily"
-      time: "19:15"
+      time: "19:50"
       # Disable all pull requests
     open-pull-requests-limit: 0
