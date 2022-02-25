@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # Configuration for Dockerfile
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "19:15"
+      # Disable all pull requests
+    open-pull-requests-limit: 0
