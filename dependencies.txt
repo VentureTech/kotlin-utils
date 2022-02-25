@@ -1,3 +1,4 @@
+com.github.virtuald:curvesapi:1.04
 com.squareup.moshi:moshi:1.12.0
 com.squareup.moshi:moshi-adapters:1.12.0
 com.squareup.moshi:moshi-kotlin:1.12.0
@@ -6,13 +7,14 @@ com.squareup.okio:okio-metadata:2.10.0
 com.winterbe:expekt:0.5.0
 commons-codec:commons-codec:1.10
 io.github.classgraph:classgraph:4.0.6
-javax.xml.stream:stax-api:1.0-2
 net.bytebuddy:byte-buddy:1.4.20
-org.apache.santuario:xmlsec:2.0.9
+org.apache.commons:commons-collections4:4.1
+org.apache.poi:poi:3.16
+org.apache.poi:poi-ooxml:3.16
+org.apache.poi:poi-ooxml-schemas:3.16
+org.apache.xmlbeans:xmlbeans:2.6.0
 org.apiguardian:apiguardian-api:1.1.0
 org.apiguardian:apiguardian-api:1.0.0
-org.codehaus.woodstox:stax2-api:3.1.4
-org.codehaus.woodstox:woodstox-core-asl:4.4.1
 org.jetbrains.intellij.deps:trove4j:1.0.20181211
 org.jetbrains.kotlin:kotlin-allopen:1.4.31
 org.jetbrains.kotlin:kotlin-annotation-processing-gradle:1.4.31
@@ -53,7 +55,7 @@ org.mockito:mockito-core:2.1.0-beta.119
 org.objenesis:objenesis:2.4
 org.opentest4j:opentest4j:1.2.0
 org.opentest4j:opentest4j:1.0.0
-org.slf4j:slf4j-api:1.7.22
 org.spekframework.spek2:spek-dsl-jvm:2.0.5
 org.spekframework.spek2:spek-runner-junit5:2.0.5
 org.spekframework.spek2:spek-runtime-jvm:2.0.5
+stax:stax-api:1.0.1
