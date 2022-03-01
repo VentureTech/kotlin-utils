@@ -52,5 +52,10 @@
   <version>30.0-jre</version>
   <type>bundle</type>
 </dependency>
+    <dependency>
+  <groupId>org.hibernate</groupId>
+  <artifactId>hibernate-core</artifactId>
+  <version>4.3.10.Final</version>
+</dependency>
   </dependencies>
 </project>
