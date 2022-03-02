@@ -49,7 +49,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi:1.12.0")
     implementation("com.squareup.moshi:moshi-adapters:1.12.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
-    implementation 'org.apache.poi:poi-ooxml:3.16'
+    implementation 'org.apache.poi:poi-ooxml:3.17'
 
     // Scripting
 //    https://youtrack.jetbrains.com/issue/KT-30986
