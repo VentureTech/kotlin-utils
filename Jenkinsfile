@@ -20,7 +20,7 @@ node {
 
     proteusTest buildProps: buildProps
 
-    proteusSBOM buildProps: buildProps
+    proteusSBOM buildProps: buildProps, projectTags: ['kotlin', 'proteus-platform']
 
     proteusReportBuildResult buildProps: buildProps
 }
