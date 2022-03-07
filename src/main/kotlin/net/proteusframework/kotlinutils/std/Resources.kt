@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package net.proteusframework.kotlinutils.std
 
 class Resources(private val suppressThrowingException: Boolean = false) : AutoCloseable {

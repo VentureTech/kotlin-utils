@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 /**
  * Plugin to provide git information
  *
- * @author Russ Tennant (russ@i2rd.com)
+ * @author Russ Tennant (russ@proteus.co)
  */
 public class GitInfo
 {

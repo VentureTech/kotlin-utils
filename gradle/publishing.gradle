@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-artifactoryPublish.dependsOn createDependencyFile
+artifactoryPublish.dependsOn createDependencyFiles
 
 publishing {
     publications {
@@ -73,5 +73,4 @@ artifactory {
     }
 
     clientConfig.info.vcsRevision = gitinfo.commit
-
 }
