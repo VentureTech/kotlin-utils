@@ -38,7 +38,7 @@ class Version
     /**
      * Optional variable that can be defined in the build.gradle
      * to determine where the ProjectInformation.java class is put
-     * when {@link #generateProjectInformationClass()} is called.
+     * when {@link #generateProjectInformationClass(Lang)} is called.
      * If not defined, the package name is <code> "${project.group}.${project.name}"</code>.
      * <p>
      *     Example: <br>
@@ -182,7 +182,6 @@ class Version
      */
     void generateProjectInformationJavaClass()
     {
-        println("generateProjectInformationClass !!!!!!!!!!!!!!!!!!")
         def now = new SimpleDateFormat('yyyyMMdd\'T\'HHmmss.SSSZ').format(new java.util.Date())
         def srcDir = project.sourceSets.main.java.srcDirs.iterator().next()
         def packageName = project.hasProperty(PROJECT_INFORMATION_PACKAGE) ?
@@ -203,8 +202,7 @@ ProjectInformation.java
         {
             return
         }
-        generatedClass.text = """
-/*
+        generatedClass.text = """/*
  * Copyright (c) Interactive Information R & D (I2RD) LLC.
  * All Rights Reserved.
  *
@@ -342,8 +340,7 @@ ProjectInformation.kt
         {
             return
         }
-        generatedClass.text = """
-/*
+        generatedClass.text = """/*
  * Copyright (c) Interactive Information R & D (I2RD) LLC.
  * All Rights Reserved.
  *
@@ -378,13 +375,31 @@ object ProjectInformation
     const val BRANCH = "${project?.gitinfo?.branch?:''}"
     /** Status: release, milestone, integration. */
     const val STATUS = "${status}"
+    /** Major part of version. */
+    const val MAJOR_VERSION: Int = ${Integer.parseInt(versionNumber.substring(0, versionNumber.indexOf('.')))}
 
-    val MAJOR_VERSION: Int
-        get() {
-            return Integer.parseInt(VERSION.substring(0, VERSION.indexOf('.')))
-        }
+    /** Java API Compatibility with ProjectInformation.java. */
+    @JvmStatic
+    fun getName() = NAME
+    /** Java API Compatibility with ProjectInformation.java. */
+    @JvmStatic
+    fun getGroup() = GROUP
+    /** Java API Compatibility with ProjectInformation.java. */
+    @JvmStatic
+    fun getVersion() = VERSION
+    /** Java API Compatibility with ProjectInformation.java. */
+    @JvmStatic
+    fun getMajorVersion() = MAJOR_VERSION
+    /** Java API Compatibility with ProjectInformation.java. */
+    @JvmStatic
+    fun getCommit() = COMMIT
+    /** Java API Compatibility with ProjectInformation.java. */
+    @JvmStatic
+    fun getBranch() = BRANCH
+    /** Java API Compatibility with ProjectInformation.java. */
+    @JvmStatic
+    fun getStatus() = STATUS
 }
 """
     }
 }
-
