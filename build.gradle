@@ -22,7 +22,6 @@
 
 
 import com.proteusframework.build.GitInfo
-import com.proteusframework.build.Property
 import com.proteusframework.build.Version
 
 buildscript {
@@ -121,8 +120,6 @@ cyclonedxBom {
     includeConfigs += ["runtimeClasspath", "testRuntimeClasspath"]
     // skipConfigs is a list of configuration names to exclude when generating the BOM
 //    skipConfigs += ["compileClasspath", "testCompileClasspath"]
-    // Specified the type of project being built. Defaults to 'library'
-//    project.ext.projectType = "application"
 }
 
 def matchDetails(DependencyResolveDetails details, String groupAndArtifact) {
