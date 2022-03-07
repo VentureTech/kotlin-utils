@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat
 
 /**
  * Version class for build script.
- * @author Russ Tennant (russ@i2rd.com)
+ * @author Russ Tennant (russ@proteus.co)
  * @since 12/3/13 4:02 PM
  */
 class Version
