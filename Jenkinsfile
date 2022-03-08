@@ -10,8 +10,8 @@
  */
 
 @Library('proteus')
-import net.proteusframework.BuildProps
-import net.proteusframework.BuildLang
+import net.proteusframework.jenkinsbuildlibrary.BuildProps
+import net.proteusframework.jenkinsbuildlibrary.BuildLang
 
 node {
     BuildProps buildProps = proteusPreBuild(javaTool: 'JDK 8', defaultBranch: 'master', slackChannel: '#platform')
