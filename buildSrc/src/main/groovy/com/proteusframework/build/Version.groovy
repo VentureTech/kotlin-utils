@@ -115,7 +115,7 @@ class Version
         {
             status = 'integration'
             versionNumber = originalVersion.substring(0, originalVersion.length() - '-SNAPSHOT'.length())
-//            thisVersion = "${versionNumber}-${getTimestamp()}"
+            //            thisVersion = "${versionNumber}-${getTimestamp()}"
             thisVersion = versionValue
         }
         else
@@ -203,14 +203,25 @@ ProjectInformation.java
             return
         }
         generatedClass.text = """/*
- * Copyright (c) Interactive Information R & D (I2RD) LLC.
- * All Rights Reserved.
+ * Copyright (c) 2019 Interactive Information Research & Development
  *
- * This software is confidential and proprietary information of
- * I2RD LLC ("Confidential Information"). You shall not disclose
- * such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered
- * into with I2RD.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package ${packageName};
@@ -222,6 +233,7 @@ package ${packageName};
  * Project Information.
  * @author Auto Generated (noreply@i2rd.com)
  */
+ @SuppressWarnings("ALL")
 public final class ProjectInformation
 {
     /** Application Name. */
@@ -232,6 +244,8 @@ public final class ProjectInformation
     private static final String _group = "${project.group}";
     /** Version. */
     private static final String _version = "${versionNumber}";
+    /** Full Version (optionally includes SNAPSHOT qualifier). */
+    private static final String _fullVersion = "${thisVersion}";
     /** Commit. */
     private static final String _commit = "${project?.gitinfo?.commit?:''}";
     /** Branch. */
@@ -271,6 +285,15 @@ public final class ProjectInformation
     public static String getVersion() 
     { 
         return _version; 
+    }
+
+    /**
+     * Get the project version: "{@value #_fullVersion}"
+     * @return the version.
+     */
+    public static String getFullVersion() 
+    { 
+        return _fullVersion; 
     }
 
     /**
@@ -341,14 +364,25 @@ ProjectInformation.kt
             return
         }
         generatedClass.text = """/*
- * Copyright (c) Interactive Information R & D (I2RD) LLC.
- * All Rights Reserved.
+ * Copyright (c) 2019 Interactive Information Research & Development
  *
- * This software is confidential and proprietary information of
- * I2RD LLC ("Confidential Information"). You shall not disclose
- * such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered
- * into with I2RD.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 @file:Suppress("MemberVisibilityCanBePrivate")
@@ -369,6 +403,8 @@ object ProjectInformation
     const val GROUP = "${project.group}"
     /** Version. */
     const val VERSION = "${versionNumber}"
+    /** Full Version (optionally includes SNAPSHOT qualifier). */
+    const val FULL_VERSION = "${thisVersion}"
     /** Commit. */
     const val COMMIT = "${project?.gitinfo?.commit?:''}"
     /** Branch. */
@@ -387,6 +423,9 @@ object ProjectInformation
     /** Java API Compatibility with ProjectInformation.java. */
     @JvmStatic
     fun getVersion() = VERSION
+    /** Java API Compatibility with ProjectInformation.java. */
+    @JvmStatic
+    fun getFullVersion() = FULL_VERSION
     /** Java API Compatibility with ProjectInformation.java. */
     @JvmStatic
     fun getMajorVersion() = MAJOR_VERSION
