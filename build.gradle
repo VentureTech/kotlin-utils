@@ -103,13 +103,13 @@ normalization {
     }
 }
 
-//tasks.register('generateProjectInformation') {
-//    version.generateProjectInformationClass(Version.Lang.Kotlin)
-//}
-//
-//tasks.named("classes") {
-//    it.dependsOn(generateProjectInformation)
-//}
+tasks.register('generateProjectInformation') {
+    version.generateProjectInformationClass(Version.Lang.Kotlin)
+}
+
+tasks.named("classes") {
+    it.dependsOn(generateProjectInformation)
+}
 
 tasks.named("cyclonedxBom").configure {
     includeConfigs = ["runtimeClasspath"]
