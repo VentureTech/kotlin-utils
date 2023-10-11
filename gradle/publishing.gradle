@@ -20,7 +20,13 @@
  * SOFTWARE.
  */
 
-artifactoryPublish.dependsOn createDependencyFiles
+tasks.named("artifactoryPublish") {
+    it.dependsOn("createDependencyFiles")
+    it.doFirst {
+        if ("${publish_venturetech_username}".trim().isEmpty()) println "Missing property: publish_venturetech_username"
+        if ("${publish_venturetech_password}".trim().isEmpty()) println "Missing property: publish_venturetech_password"
+    }
+}
 
 publishing {
     publications {
@@ -42,25 +48,20 @@ publishing {
         }
     }
 }
-artifactoryPublish.doFirst {
-    if ("${publish_venturetech_username}".trim().isEmpty()) println "Missing property: publish_venturetech_username"
-    if ("${publish_venturetech_password}".trim().isEmpty()) println "Missing property: publish_venturetech_password"
-}
+
 artifactory {
-    contextUrl = publish_venture_tech_url
+    contextUrl = publishURL
 
     publish {
         repository {
-            repoKey = (version.isSnapshot() ? publish_venture_tech_snapshot_key : publish_venture_tech_release_key)
+            repoKey = (version.isSnapshot() ? publishSnapshotKey : publishReleaseKey)
             username = publish_venturetech_username
             password = publish_venturetech_password
         }
         defaults {
             publications('mavenPub')
             properties = [
-                'status'      : version.status, 'release.status': version.status,
-                'build.status': version.status, 'commit': gitinfo.commit,
-                'branch'      : gitinfo.branch
+                'status'      : version.status, 'release.status': version.status
             ]
         }
     }
@@ -71,6 +72,4 @@ artifactory {
             password = repo_venturetech_password
         }
     }
-
-    clientConfig.info.vcsRevision = gitinfo.commit
 }

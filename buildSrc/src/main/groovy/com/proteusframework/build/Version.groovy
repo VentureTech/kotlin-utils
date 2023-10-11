@@ -131,22 +131,10 @@ class Version
         return format.format(buildTime)
     }
 
-    int getCommitAsNumber()
-    {
-        Integer.parseInt(project.gitinfo.commit.substring(0,7), 16)
-    }
-
     String toString()
     {
         thisVersion
     }
-
-    private def getCommit(String text)
-    {
-        def matcher = text =~ /_commit = "([^"]+)/
-        return matcher ? matcher[0][1] : 'unknown commit'
-    }
-
     private def getVersion(String text)
     {
         def matcher = text =~ /_version = "([^"]+)/
@@ -185,7 +173,6 @@ ProjectInformation.java
         }
         def generatedClass = new File(packageDir, 'ProjectInformation.java')
         if(generatedClass.exists()
-            && getCommit(generatedClass.text) == project?.gitinfo?.commit?:''
             && getVersion(generatedClass.text) == versionNumber
         )
         {
@@ -224,10 +211,6 @@ public final class ProjectInformation
     private static final String _version = "${versionNumber}";
     /** Full Version (optionally includes SNAPSHOT qualifier). */
     private static final String _fullVersion = "${thisVersion}";
-    /** Commit. */
-    private static final String _commit = "${project?.gitinfo?.commit?:''}";
-    /** Branch. */
-    private static final String _branch = "${project?.gitinfo?.branch?:''}";
     /** Status: release, milestone, integration. */
     private static final String _status = "${status}";
 
@@ -275,24 +258,6 @@ public final class ProjectInformation
     }
 
     /**
-     * Get the commit id: "{@value #_commit}"
-     * @return the commit id.
-     */
-    public static String getCommit() 
-    { 
-        return _commit; 
-    }
-
-    /**
-     * Get the branch: "{@value #_branch}"
-     * @return the branch.
-     */
-    public static String getBranch() 
-    { 
-        return _branch; 
-    }
-
-    /**
      * Get the project status: "{@value #_status}"
      * @return the status.
      */
@@ -335,7 +300,6 @@ ProjectInformation.kt
         }
         def generatedClass = new File(packageDir, 'ProjectInformation.kt')
         if (generatedClass.exists()
-            && getCommit(generatedClass.text) == project?.gitinfo?.commit?:''
             && getVersion(generatedClass.text) == versionNumber
         )
         {
@@ -372,10 +336,6 @@ object ProjectInformation
     const val VERSION = "${versionNumber}"
     /** Full Version (optionally includes SNAPSHOT qualifier). */
     const val FULL_VERSION = "${thisVersion}"
-    /** Commit. */
-    const val COMMIT = "${project?.gitinfo?.commit?:''}"
-    /** Branch. */
-    const val BRANCH = "${project?.gitinfo?.branch?:''}"
     /** Status: release, milestone, integration. */
     const val STATUS = "${status}"
     /** Major part of version. */
@@ -396,12 +356,6 @@ object ProjectInformation
     /** Java API Compatibility with ProjectInformation.java. */
     @JvmStatic
     fun getMajorVersion() = MAJOR_VERSION
-    /** Java API Compatibility with ProjectInformation.java. */
-    @JvmStatic
-    fun getCommit() = COMMIT
-    /** Java API Compatibility with ProjectInformation.java. */
-    @JvmStatic
-    fun getBranch() = BRANCH
     /** Java API Compatibility with ProjectInformation.java. */
     @JvmStatic
     fun getStatus() = STATUS

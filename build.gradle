@@ -20,55 +20,29 @@
  * SOFTWARE.
  */
 
-
-import com.proteusframework.build.GitInfo
 import com.proteusframework.build.Version
 
-buildscript {
-    ext.kotlin_version = version_kotlin
-    repositories {
-        if(hasLocalRepo){ maven { url = local_repo } }
-        maven {
-            url repoReleaseURL
-            credentials {
-                username "${repo_venturetech_username}"
-                password "${repo_venturetech_password?:''}"
-            }
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
-    }
-}
-
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version "${kotlin_version}"
+    id 'org.jetbrains.kotlin.jvm' version "${version_kotlin}"
+
+    id 'maven-publish'
+    id "org.cyclonedx.bom" version "1.7.3"
 
     id 'idea'
-    id 'maven-publish'
-    id "com.jfrog.artifactory" version "4.21.0"
-    id "org.cyclonedx.bom" version "1.5.0"
 
-    id "com.github.ManifestClasspath" version "0.1.0-RELEASE"
+    id("com.jfrog.artifactory") version "4.21.0"
+
+    // This plugin is for Windows users - https://plugins.gradle.org/plugin/com.github.ManifestClasspath
+    // Uncomment as needed
+    //    id "com.github.ManifestClasspath" version "0.1.0-RELEASE"
 }
 
-// Check required properties
-def props = [
-    new com.proteusframework.build.Property(name:'repo_venturetech_username',
-        description:'Username to access the artifact repository'),
-    new com.proteusframework.build.Property(name:'repo_venturetech_password',
-        description:'Password to access the artifact repository'),
-    new com.proteusframework.build.Property(name:'publish_venturetech_username',
-        description:'Username to upload to the artifact repository', required:false),
-    new com.proteusframework.build.Property(name:'publish_venturetech_password',
-        description:'Password to upload to the artifact repository', required:false),
-]
-props.each({it.test(rootProject)})
 
+project.ext.ci_server = project.hasProperty("CI") || Boolean.getBoolean("CI")
+println("Is a CI server? ${ci_server}")
 
 repositories {
 //    mavenLocal()
-    if(hasLocalRepo){ maven { url = local_repo } }
     maven {
         url repoReleaseURL
         credentials {
@@ -90,10 +64,8 @@ repositories {
         }
     }
 }
-GitInfo.populateProject(project)
 
 description = "${app_description}"
-buildDir = 'build'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 version = new Version(app_version, project)
@@ -102,6 +74,19 @@ ext[Version.PROJECT_INFORMATION_PACKAGE] = 'net.proteusframework.kotlinutils.con
 
 afterEvaluate {
     println "Project: $app_name $version"
+    // Check required properties
+    def props = [
+        new com.proteusframework.build.Property(name:'repo_venturetech_username',
+            description:'Username to access the artifact repository'),
+        new com.proteusframework.build.Property(name:'repo_venturetech_password',
+            description:'Password to access the artifact repository'),
+        new com.proteusframework.build.Property(name:'publish_venturetech_username',
+            description:'Username to upload to the artifact repository', required:false),
+        new com.proteusframework.build.Property(name:'publish_venturetech_password',
+            description:'Password to upload to the artifact repository', required:false),
+    ]
+    props.forEach({it.test(rootProject)})
+
 }
 
 apply from: 'gradle/dependencies.gradle'
@@ -110,20 +95,26 @@ apply from: 'gradle/artifacts.gradle'
 apply from: 'gradle/publishing.gradle'
 
 normalization {
+    // https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:configure_input_normalization
+    // https://docs.gradle.org/current/javadoc/org/gradle/normalization/RuntimeClasspathNormalization.html
     runtimeClasspath {
-        ignore 'net.proteusframework.kotlinutils.config.ProjectInformation.*'
+        ignore '**/net/proteusframework/kotlinutils/config/ProjectInformation.*'
+        ignore '**/dependencies*.txt'
     }
 }
 
-gradle.projectsEvaluated {
+tasks.register('generateProjectInformation') {
     version.generateProjectInformationClass(Version.Lang.Kotlin)
 }
 
-cyclonedxBom {
-    // includeConfigs is the list of configuration names to include when generating the BOM (leave empty to include every configuration)
-    includeConfigs += ["runtimeClasspath", "testRuntimeClasspath"]
+tasks.named("classes") {
+    it.dependsOn(generateProjectInformation)
+}
+
+tasks.named("cyclonedxBom").configure {
+    includeConfigs = ["runtimeClasspath"]
     // skipConfigs is a list of configuration names to exclude when generating the BOM
-//    skipConfigs += ["compileClasspath", "testCompileClasspath"]
+    skipConfigs = ["compileClasspath", "testCompileClasspath"]
 }
 
 def matchDetails(DependencyResolveDetails details, String groupAndArtifact) {
@@ -134,7 +125,7 @@ def matchDetails(DependencyResolveDetails details, String groupAndArtifact) {
 }
 
 //noinspection GroovyAssignabilityCheck
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         // cache dynamic versions for ...
 //        cacheDynamicVersionsFor 0, 'seconds'
