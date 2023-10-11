@@ -21,6 +21,7 @@
  * SOFTWARE.
  */
 
+
 plugins {
     id 'groovy'
 }
@@ -31,11 +32,10 @@ repositories {
             username "${repo_venturetech_username}"
             password "${repo_venturetech_password?:''}"
         }
-        url "${repo_venture_tech_url}/release"
+        url repoReleaseURL
     }
 }
 
 dependencies {
     implementation gradleApi()
-    implementation "org.ajoberstar.grgit:grgit-core:3.0.0"
 }

@@ -136,7 +136,7 @@ class ZipRange private constructor(
         }
     }
 
-    fun length() = ranges.sumBy { it.length() }
+    fun length() = ranges.sumOf { it.length() }
 
     fun atIndex(index: Int): Int {
         var mIndex = index

@@ -43,7 +43,7 @@ class IntIntervals private constructor(
         return "IntIntervals(ranges=$ranges, start=$start, endInclusive=$endInclusive)"
     }
 
-    fun length() = ranges.sumBy { it.length() }
+    fun length() = ranges.sumOf { it.length() }
 
     fun atIndex(index: Int): Int {
         var mIndex = index

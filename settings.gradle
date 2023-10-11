@@ -28,43 +28,21 @@ pluginManagement {
 settings.rootProject.name = "${app_name}"
 
 settings.gradle.projectsLoaded( {
-    def hasLocalRepo = settings.hasProperty('local_repo')
-    if(hasLocalRepo) {
-        def repoHost = new URL(settings.getProperty('local_repo')).getHost()
-        def pingCommand = null
-        if(new File('/bin/ping').canExecute())
-            pingCommand = '/bin/ping'
-        else if(new File('/sbin/ping').canExecute())
-            pingCommand = '/sbin/ping'
-        else if(new File('C:\\Windows\\System32\\ping.exe').canExecute())
-            pingCommand = 'C:\\Windows\\System32\\ping.exe'
-        if(pingCommand)
-        {
-            def baseDir = settings.gradle.rootProject.rootDir
-            def envp = System.getenv().collect({k, v -> "${k}=${v}"})
-            def osName = System.getProperty('os.name', '').toLowerCase()
-            def isMac = osName.contains('mac')
-            def isWindows = osName.contains('windows')
-            def command
-            if (isMac) command = [pingCommand, '-q', '-W', '250', '-c', '1', repoHost]
-            else if (isWindows) command = [pingCommand, '-w', '250', '-n', '1', repoHost]
-            else command = [pingCommand, '-q', '-w', '0.25', '-c', '1', repoHost]
-            def process = command.execute(envp, baseDir)
-            process.consumeProcessOutput(System.out, System.err)
-            if(process.waitFor() != 0) {
-                hasLocalRepo = false
-            }
-        }
-    }
-    println "Has Local Repo? $hasLocalRepo"
-    settings.gradle.rootProject.ext.hasLocalRepo = hasLocalRepo;
-    settings.gradle.rootProject.ext.repoReleaseURL = "${repo_venture_tech_url}/release"
-    settings.gradle.rootProject.ext.repoSnapshotURL = "${repo_venture_tech_url}/snapshot"
-    settings.gradle.rootProject.ext.isIDEA = System.getProperties().containsKey('idea.active') ||
-        System.getProperties().containsKey('idea.paths.selector') ||
+    def properties = System.getProperties()
+    def runningIDEA = properties.containsKey('idea.active') ||
+        properties.containsKey('idea.paths.selector') ||
         plugins.any({it.class.name == 'JetGradlePlugin'})
-    settings.gradle.rootProject.ext.isEclipse = System.getProperties().containsKey('eclipse.product')
+    def buildingWar = gradle.startParameter.taskNames.any {
+        it == 'war' || it == 'aP' || it == 'artifactoryPublish' || it == 'pTML' || it == 'publishToMavenLocal'
+    }
+    def refreshDependenciesFile = gradle.startParameter.allInitScripts.any { file ->
+        file.absolutePath.endsWith("ijinit.gradle")
+    } && gradle.startParameter.taskNames.isEmpty()
+
+    settings.gradle.rootProject.ext.refreshDependenciesFile = refreshDependenciesFile
+    settings.gradle.rootProject.ext.isIDEA = runningIDEA
+    settings.gradle.rootProject.ext.warTaskSpecified = buildingWar
     settings.gradle.rootProject.ext.compileLibraries = settings.hasProperty('compile_libraries') ||
-        settings.gradle.rootProject.ext.isIDEA;
+        settings.gradle.rootProject.ext.isIDEA
 })
 
